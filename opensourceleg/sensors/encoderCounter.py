@@ -4,14 +4,14 @@ Updated by Cameron Cobb for Python 3 (March 17th, 2019).
 Updated by David Lam for opensourceleg (March, 2026).
 Updated by Emily Bywater, also for opensourceleg (March, 2026)
 
-Usage: import LS7366R then create an object by calling enc = LS7366R(CSX, CLK, BTMD)
-CSX is either CE0 or CE1, CLK is the speed, BTMD is the bytemode 1-4 the resolution of your counter.
+Usage: import LS7366R then create an object by calling enc = LS7366R(csx, clk, byte_mode)
+csx is either CE0 or CE1, clk is the speed, byte_mode is the bytemode 1-4 the resolution of your counter.
 example: lever.Encoder(0, 1000000, 4)
 These are the default values.
 """
 
 from time import sleep
-from typing import ClassVar, Final
+from typing import ClassVar, Final, cast
 
 import spidev
 
@@ -61,9 +61,9 @@ class LS7366R(EncoderCounterBase):
 
     def __init__(
         self,
-        CSX: int = 0,
-        CLK: int = 1000000,
-        BTMD: int = 4,
+        csx: int = 0,
+        clk: int = 1000000,
+        byte_mode: int = 4,
         max_val: int = 4294967295,  # for four byte mode, only correct for four byte mode
         spi_bus: int = 0,
         offline: bool = False,
@@ -73,9 +73,9 @@ class LS7366R(EncoderCounterBase):
         Initialize the LS7366R encoder counter and configure the SPI interface.
 
         Args:
-            CSX (int): SPI chip select line (CE0 or CE1). Defaults to 0.
-            CLK (int): SPI clock speed in Hz. Defaults to 1000000.
-            BTMD (int): Counter resolution in bytes (1 to 4). Defaults to 4.
+            csx (int): SPI chip select line (CE0 or CE1). Defaults to 0.
+            clk (int): SPI clock speed in Hz. Defaults to 1000000.
+            byte_mode (int): Counter resolution in bytes (1 to 4). Defaults to 4.
             max_val (int): Maximum counter value for signed conversion. Only correct for four-byte mode.
                 Defaults is 4294967295.
             spi_bus (int): SPI bus number. Defaults is 0.
@@ -85,17 +85,17 @@ class LS7366R(EncoderCounterBase):
 
         super().__init__(tag=tag, offline=offline)
 
-        self.counterSize = BTMD  # Sets the byte mode that will be used
+        self.counterSize = byte_mode  # Sets the byte mode that will be used
         self.max_val = max_val  # Maximum value for the counter, used for signed count conversion
 
         self.spi = spidev.SpiDev()  # Initialize object
-        self.spi.open(spi_bus, CSX)  # Which CS line will be used
-        self.spi.max_speed_hz = CLK  # Speed of clk (modifies speed transaction)
+        self.spi.open(spi_bus, csx)  # Which CS line will be used
+        self.spi.max_speed_hz = clk  # Speed of clk (modifies speed transaction)
 
         # Init the Encoder
-        LOGGER.info(f"Clearing Encoder CS{CSX!s}'s Count...\t")
+        LOGGER.info(f"Clearing Encoder CS{csx!s}'s Count...\t")
         self.clear_counter()
-        LOGGER.info(f"Clearing Encoder CS{CSX!s}'s Status..\t")
+        LOGGER.info(f"Clearing Encoder CS{csx!s}'s Status..\t")
         self.clear_status()
 
         self.spi.xfer2([self.WRITE_MODE0, self.QUADRATURE_COUNT_MODE])
@@ -160,28 +160,32 @@ class LS7366R(EncoderCounterBase):
 
         return self.EncoderCount
 
-    def readStatus(self):
+    def readStatus(self) -> int:
         """
         Read the status register of the encoder over SPI.
 
         Returns:
-            int: 8-bit status register value in the range [0, 255].
+            int: 8-bit status register value.
         """
         data = self.spi.xfer2([self.READ_STATUS, 0xFF])
 
-        return data[1]
+        return cast(int, data[1])
 
     def start(self) -> None:
-        """Not yet supported by this library."""
+        """Start the encoder counter. Not required for this driver."""
         pass
 
     def stop(self) -> None:
-        """Not yet supported by this library."""
+        """
+        Stop the encoder by closing the SPI connection and clearing registers.
+        """
         self.close()
         LOGGER.info("Motor encoder stopped successfully.")
 
     def update(self) -> None:
-        """Not yet supported by this library."""
+        """
+        Update the encoder state by reading the latest counter value from SPI.
+        """
         self.read_counter()
 
     @property
