@@ -6,7 +6,7 @@ import math
 from dataclasses import dataclass
 from enum import Enum
 from time import sleep
-from typing import Any, Callable, ClassVar, Optional
+from typing import Any, Callable, ClassVar, Optional, cast
 
 import numpy as np
 from gpiozero import DigitalInputDevice
@@ -367,13 +367,8 @@ class ADS114S0x(ADCBase):
         LOGGER.info("Starting ADC...")
         self.init_spi()
 
-        # Provide additional delay for power supply settling
         self.delay_us(self._DELAY_2p2MS)
-
-        # Toggle RESET pin to assure default register settings
         self.reset()
-
-        # Ensure internal register array is initialized
         self.restore_register_defaults()
 
         # Configure initial device register settings
@@ -438,34 +433,32 @@ class ADS114S0x(ADCBase):
 
         return not reply & self._ADS_nRDY_MASK
 
-    def _read_data_millivolts(self) -> Optional[list[float]]:
+    def _read_data_millivolts(self) -> list[float] | None:
         """
         Read all configured channels and return their values in millivolts.
 
         Returns:
-            list[float]: Millivolt readings for each configured channel,
+            list[float] | None: Millivolt readings for each configured channel,
                 or None if no channels have been configured.
         """
-        row = []
-        if self._channels:
-            for ch in self._channels.values():
-                self.set_mux_single_ended(ch.ain_pos_code)
-                self.discard_settling_reads(timeout_ms=1000)
-                self.start_conversions()
-                code16, _ = self.wait_and_read_code16()
-                volts = self.code16_to_volts(code16)
-                millivolts = volts * 1000
-
-                if ch.postprocess is not None:
-                    millivolts = ch.postprocess(millivolts)
-
-                row += [millivolts]
-
-        else:
-            row = None
+        if not self._channels:
             LOGGER.info("No channels have been configured for reading. Use ChannelConfig.")
+            return None
 
-        # print(row)
+        row: list[float] = []
+        for ch in self._channels.values():
+            self.set_mux_single_ended(ch.ain_pos_code)
+            self.discard_settling_reads(timeout_ms=1000)
+            self.start_conversions()
+            code16, _ = self.wait_and_read_code16()
+            volts = self.code16_to_volts(code16)
+            millivolts = volts * 1000
+
+            if ch.postprocess is not None:
+                millivolts = ch.postprocess(millivolts)
+
+            row += [millivolts]
+
         return row
 
     # Properties required by SensorBase
@@ -480,7 +473,7 @@ class ADS114S0x(ADCBase):
         return self._streaming
 
     @property
-    def data(self) -> np.ndarray:
+    def data(self) -> list[float] | None:
         """
         Get the latest ADC data in millivolts.
 
@@ -534,14 +527,14 @@ class ADS114S0x(ADCBase):
 
         # Build TX array
         data_tx = [self._OPCODE_RREG | (address & self._OPCODE_RWREG_MASK), 0, 0]
-        # Send and receive
+
         data_rx = self.spi_send_receive_arrays(data_tx, self._COMMAND_LENGTH + 1)
 
         # Update register array and return result
         self._register_map[address] = data_rx[self._COMMAND_LENGTH]
         return data_rx[self._COMMAND_LENGTH]
 
-    def read_multiple_registers(self, start_address=0x00, count=17) -> None:
+    def read_multiple_registers(self, start_address: int = 0x00, count: int = 17) -> None:
         """
         Reads a group of registers starting at the specified address
         Use get_register_value() to retrieve the read values
@@ -557,7 +550,6 @@ class ADS114S0x(ADCBase):
         data_tx = [self._OPCODE_RREG | (start_address & self._OPCODE_RWREG_MASK), count - 1]
         data_tx.extend([0] * count)
 
-        # Send and receive
         data_rx = self.spi_send_receive_arrays(data_tx, self._COMMAND_LENGTH + count)
 
         # Store received register data
@@ -578,7 +570,6 @@ class ADS114S0x(ADCBase):
         # Build TX array
         data_tx = [self._OPCODE_WREG | (address & self._OPCODE_RWREG_MASK), 0, data & 0xFF]
 
-        # Send
         self.spi_send_receive_arrays(data_tx, self._COMMAND_LENGTH + 1)
 
         # Update register array
@@ -605,7 +596,6 @@ class ADS114S0x(ADCBase):
             data_tx.append(reg_data[i - start_address] & 0xFF)
             self._register_map[i] = reg_data[i - start_address] & 0xFF
 
-        # Send
         self.spi_send_receive_arrays(data_tx, self._COMMAND_LENGTH + count)
 
     def send_command(self, op_code: int) -> None:
@@ -620,14 +610,11 @@ class ADS114S0x(ADCBase):
         if op_code == self._OPCODE_WREG:
             raise ValueError("Use write_single_register() or write_multiple_registers()")
 
-        # Send command
         self.spi_send_receive_byte(op_code)
 
         # Check for RESET command
         if op_code == self._OPCODE_RESET:
-            # Must wait 4096 tCLK after reset
-            self.delay_us(self._DELAY_4096TCLK)
-            # Update register array
+            self.delay_us(self._DELAY_4096TCLK)  # Must wait 4096 tCLK after reset
             self.restore_register_defaults()
 
     def start_conversions(self) -> None:
@@ -681,7 +668,6 @@ class ADS114S0x(ADCBase):
             byte_length += 1
             data_position += 1
 
-        # Send and receive
         data_rx = self.spi_send_receive_arrays(data_tx, byte_length)
 
         # Parse status byte if enabled
@@ -711,9 +697,6 @@ class ADS114S0x(ADCBase):
 
             if error:
                 raise ValueError("CRC error in converted data")
-
-        # Calculate sign-extended 32-bit result
-        4278190080 if data_rx[data_position] & 128 else 0
 
         # --- ADS114S08: 3 data bytes are returned, but the ADC result is 16-bit.
         # Treat the 3 bytes as a signed 24-bit container, then shift down to 16-bit.
@@ -758,10 +741,13 @@ class ADS114S0x(ADCBase):
         """
         Configures the Raspberry Pi's SPI peripheral for interfacing with the ADC
 
-        Returns:
+        Raises:
+            RuntimeError: If the SPI device is not initialized.
 
         Note: ADS124S08 operates in SPI mode 1 (CPOL = 0, CPHA = 1)
         """
+        if self._spi is None:
+            raise RuntimeError("SPI device is not initialized. Ensure spidev is installed.")
         self._spi.open(self._spi_bus, self._spi_cs)
         self._spi.max_speed_hz = self._SPI_SPEED
         self._spi.mode = 0b01  # SPI Mode 1 (CPOL=0, CPHA=1)
@@ -774,15 +760,6 @@ class ADS114S0x(ADCBase):
         if self._spi is not None:
             self._spi.close()
             self._spi = None
-
-    # def delay_ms(delay_time_ms: int) -> None:
-    #     """
-    #     Provides a timing delay with millisecond resolution
-
-    #     Args:
-    #         delay_time_ms: Number of milliseconds to delay
-    #     """
-    #     sleep(delay_time_ms / 1000.0)
 
     def delay_us(self, delay_time_us: int) -> None:
         """
@@ -843,14 +820,19 @@ class ADS114S0x(ADCBase):
 
         Returns:
             List of received bytes from MISO
+
+        Raises:
+            RuntimeError: If the SPI device is not initialized.
         """
+        if self._spi is None:
+            raise RuntimeError("SPI device is not initialized.")
+
         # Ensure data_tx has the correct length
         tx_data = data_tx[:byte_length]
 
-        # Transfer data
         rx_data = self._spi.xfer2(tx_data)
 
-        return rx_data
+        return cast(list[int], rx_data)
 
     def spi_send_receive_byte(self, data_tx: int) -> int:
         """
@@ -861,10 +843,16 @@ class ADS114S0x(ADCBase):
 
         Returns:
             Received byte from MISO
+
+        Raises:
+            RuntimeError: If the SPI device is not initialized.
         """
+        if self._spi is None:
+            raise RuntimeError("SPI device is not initialized.")
+
         rx_data = self._spi.xfer2([data_tx & 0xFF])
 
-        return rx_data[0]
+        return cast(int, rx_data[0])
 
     # Functions transferred from VSO-CODEBASE-DEV repo crc.py
     def init_crc(self) -> None:
