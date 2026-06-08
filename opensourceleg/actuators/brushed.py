@@ -74,8 +74,8 @@ MAXON_CONTROL_MODE_CONFIGS = CONTROL_MODE_CONFIGS(
         has_gains=False,
         max_gains=None,
     ),
-    CURRENT=None,  # CURRENT mode not supported.
-    VELOCITY=None,  # VELOCITY mode not supported.
+    CURRENT=None,  # CURRENT mode not supported
+    VELOCITY=None,  # VELOCITY mode not supported
     IDLE=None,  # IDLE mode not supported
     IMPEDANCE=None,  # IMPEDANCE mode not supported
     VOLTAGE=None,  # VOLTAGE mode not supported
@@ -84,7 +84,7 @@ MAXON_CONTROL_MODE_CONFIGS = CONTROL_MODE_CONFIGS(
 
 class MaxonActuator(ActuatorBase):
     """
-     Class for controlling a Maxon brushed motor with the VNH7070AY driver.
+    Class for controlling a Maxon brushed motor with the VNH7070AY driver.
 
     Supports position control via PID and direct PWM commands.
     Current, voltage, impedance, and velocity control modes are not supported.
@@ -158,9 +158,7 @@ class MaxonActuator(ActuatorBase):
 
     def stop(self) -> None:
         """Stops the motor by setting PWM to zero and disabling direction outputs."""
-
         self.speed_control.value = 0
-        # self.direction.stop()
         self.ina.off()
         self.inb.off()
 
@@ -209,11 +207,11 @@ class MaxonActuator(ActuatorBase):
         """Set current control gains. Not yet supported by this library."""
         raise NotImplementedError("Set current gains not implemented. Motor should be controlled by position or pwm.")
 
-    def set_position_gains(self, K_p: float = 0.015, K_i: float = 2, K_d: float = 0.0001, ff: float = 0.0) -> None:
+    def set_position_gains(self, k_p: float = 0.015, k_i: float = 2, k_d: float = 0.0001, ff: float = 0.0) -> None:
         """Set position control gains."""
-        self.K_p = K_p  # Proportional gain
-        self.K_i = K_i  # Integral gain
-        self.K_d = K_d  # Derivative gain
+        self.k_p = k_p  # Proportional gain
+        self.k_i = k_i  # Integral gain
+        self.k_d = k_d  # Derivative gain
 
     def _set_impedance_gains(self, k: float = 0.0, b: float = 0.0) -> None:
         """Set impedance control gains. Not yet supported by this library."""
@@ -244,6 +242,14 @@ class MaxonActuator(ActuatorBase):
         on the VSO; the hard stop corresponds to 100% stiffness.
 
         Args:
+            homing_voltage (int): Voltage to use for homing.
+            homing_frequency (Optional[int]): Frequency to use for homing.
+            homing_direction (int): Direction to move the actuator during homing.
+            output_position_offset (float): Offset to add to the output position.
+            current_threshold (int): Current threshold to stop homing.
+            velocity_threshold (float): Velocity threshold to stop homing.
+            callback (Optional[Callable[[], None]]): Optional callback function to be
+                called when homing completes.
             homing_pwm (float): PWM duty cycle applied during homing.
                 Defaults to 0.25.
             sample_rate (float): Time in seconds between encoder samples.
@@ -252,8 +258,6 @@ class MaxonActuator(ActuatorBase):
                 samples that is considered stationary. Defaults to 200.
             home_zero (bool): If True, home to the zero-stiffness position.
                 If False, home to the full-stiffness hard stop. Defaults to True.
-            callback (callable, optional): Function called after homing
-                completes. Defaults to None.
             timeout_s (float): Maximum homing duration in seconds.
                 Defaults to 8.0.
         """
@@ -278,16 +282,12 @@ class MaxonActuator(ActuatorBase):
 
             self.update()
             error = self.motor_position_cts - last_position
-            # LOGGER.info(
-            # f"home loop: last={last_position}, now={self.motor_position_cts}, delta={error}"
-            # )
             if -position_threshold <= error <= position_threshold:
                 self.stop()
                 keep_going = False
 
-        # --- CALLBACK EXECUTION ---
         if callback is not None:
-            callback()  # This executes the function passed in
+            callback()
 
     @property
     def motor_encoder_position_perc(self) -> float:
@@ -326,7 +326,7 @@ class MaxonActuator(ActuatorBase):
     @property
     def motor_voltage(self) -> float:
         """
-        Motor voltage (V) . Not supported by this driver.
+        Motor voltage (V). Not supported by this driver.
 
         Returns:
             float: Always returns 0.0.
@@ -371,7 +371,7 @@ class MaxonActuator(ActuatorBase):
     @property
     def winding_temperature(self) -> float:
         """
-         Motor winding temperature in degrees Celsius. Not supported by this driver.
+        Motor winding temperature in degrees Celsius. Not supported by this driver.
 
         The VNH7070AY has thermal shutdown protection but does not provide
         real-time temperature without an external sensor.
@@ -409,8 +409,7 @@ class MaxonActuator(ActuatorBase):
 
     def mm_to_cts(self, mm: float) -> float:
         """
-        Convert a number of encoder counts to a number of mm moved assuming a
-        rotary to linear transmission like a lead screw.
+        Convert linear displacement in millimeters to encoder counts.
 
         Args:
             mm (float): Linear displacement in millimeters.
@@ -433,16 +432,16 @@ class MaxonActuator(ActuatorBase):
         """
         return counts / self.scale
 
-    def position_control_init(self, K_p: float = 0.015, K_i: float = 2, K_d: float = 0.0001) -> None:
+    def position_control_init(self, k_p: float = 0.015, k_i: float = 2, k_d: float = 0.0001) -> None:
         """
         Initialize the PID position controller and reset all internal state.
 
         Args:
-            K_p (float): Proportional gain. Defaults to 0.015.
-            K_i (float): Integral gain. Defaults to 2.
-            K_d (float): Derivative gain. Defaults to 0.0001.
+            k_p (float): Proportional gain. Defaults to 0.015.
+            k_i (float): Integral gain. Defaults to 2.
+            k_d (float): Derivative gain. Defaults to 0.0001.
         """
-        self.set_position_gains(K_p, K_i, K_d)
+        self.set_position_gains(k_p, k_i, k_d)
         self.error_encoder_last = 0.0
         self.d_term_last = 0.0
         self.d_term_filtered_last = 0.0
@@ -467,7 +466,7 @@ class MaxonActuator(ActuatorBase):
         Args:
             scale_perc: encoder counts to 1% of full range of motion for the motor in one direction
             scale: encoder conversion scale (counts to mm)
-            min_error: Minimum desired change in slider position that will result in a motor command
+            min_pos_error: Minimum desired change in slider position that will result in a motor command
             slider_max_perc: [%] This is set slightly below 100% so that the spring support does not hit the hard stop.
             slider_min_perc: [%] This is set slightly above 0% so that the spring support does not hit the coupler.
             time_limit: [sec] maximum time for position control loop to execute (safety).
@@ -489,11 +488,11 @@ class MaxonActuator(ActuatorBase):
 
     def lpfilter1(self, x: list[float], y_past: list[float]) -> float:
         """
-         Apply a first-order low-pass IIR filter to the derivative term.
+        Apply a first-order low-pass IIR filter to the derivative term.
 
         Used to low-pass filter the derivative term in the PID control of the VSO spring support.
 
-         Args:
+        Args:
              x (list[float]): Last two unfiltered derivative values [x_k, x_{k-1}].
              y_past (list[float]): Last one filtered derivative value [y_{k-1}].
 
@@ -508,8 +507,7 @@ class MaxonActuator(ActuatorBase):
 
     def pid_ctrl_position(self, error_encoder: float, dt: float) -> float:
         """
-        Set the motor position with respect to a percentage (0-100) of the full range of motion for the
-        motor in one direction.
+        Compute a PID PWM output given the current position error.
 
         Args:
             error_encoder (float): Current position error in encoder counts.
@@ -518,20 +516,19 @@ class MaxonActuator(ActuatorBase):
         Returns:
             float: PWM duty cycle command.
         """
-        p_term = self.K_p * error_encoder
+        p_term = self.k_p * error_encoder
 
         error_derivative = (error_encoder - self.error_encoder_last) / dt
         self.error_encoder_last = error_encoder
-        d_term = error_derivative * self.K_d
+        d_term = error_derivative * self.k_d
         d_term_filtered = self.lpfilter1([self.d_term_last, d_term], [self.d_term_filtered_last])
         self.d_term_last = d_term
         self.d_term_filtered_last = d_term_filtered
 
         # only integrate when not saturated (prevent windup)
         if -(self.pwm_maximum_command - 5) < self.last_pwm < (self.pwm_maximum_command - 5):
-            self.i_term = self.i_term + (self.K_i * error_encoder * dt)
+            self.i_term = self.i_term + (self.k_i * error_encoder * dt)
 
-        # Set PWM frequency
         pwm_feedback = int(p_term + self.i_term + d_term_filtered) / 100
         self.last_pwm = pwm_feedback
 
@@ -553,13 +550,11 @@ class MaxonActuator(ActuatorBase):
 
     def set_motor_direction_forward(self) -> None:
         """Set the motor direction to be forwards."""
-        # self.direction.forward()
         self.ina.on()
         self.inb.off()
 
     def set_motor_direction_backward(self) -> None:
         """Set the motor direction to be backwards."""
-        # self.direction.backward()
         self.ina.off()
         self.inb.on()
 
