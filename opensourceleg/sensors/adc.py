@@ -325,12 +325,12 @@ class ADS114S0x(ADCBase):
             spi_bus (int): SPI bus number. Default is 0.
             spi_cs (int): SPI chip select line. Default is 0.
             data_rate (int): Sampling rate in Hz. Default is 500 Hz.
-            pga_gain (int): Default is 1,
+            pga_gain (int): Default is 1.
             voltage_reference (float): Reference voltage in volts. Default is 2.5 V.
             drdy (int): GPIO pin number for the data-ready signal. Defaults to 16.
             offline (bool): If True, the ADC operates in offline mode. Default is False.
 
-          Raises:
+        Raises:
             ImportError: If spidev is not installed and offline is False.
         """
 
@@ -408,13 +408,13 @@ class ADS114S0x(ADCBase):
             RuntimeError: If the ADC does not become ready within 1000 attempts.
         """
 
-        MAX_ATTEMPTS = 1000
+        max_attempts = 1000
         attempts = 0
 
         while self._ready_to_read() is False:
             sleep(0.001)
             attempts += 1
-            if attempts > MAX_ATTEMPTS:
+            if attempts > max_attempts:
                 raise RuntimeError(
                     "Couldn't connect to the ADC, please ensure that the device is connected and powered on."
                 )
@@ -492,7 +492,7 @@ class ADS114S0x(ADCBase):
     # Functions transferred from VSO-CODEBASE-DEV repo: ads114s08.py
     def get_register_value(self, address: int) -> int:
         """
-        Getter function to access the register map array
+        Getter function to access the register map array.
 
         Args:
             address: The 8-bit register address
@@ -505,11 +505,11 @@ class ADS114S0x(ADCBase):
         return self._register_map[address]
 
     def is_sendstat_set(self) -> bool:
-        """Check if SENDSTAT bit is set in SYS register"""
+        """Check if SENDSTAT bit is set in SYS register."""
         return bool(self.get_register_value(self._REG_ADDR_SYS) & self._ADS_SENDSTATUS_MASK)
 
     def is_crc_set(self) -> bool:
-        """Check if CRC bit is set in SYS register"""
+        """Check if CRC bit is set in SYS register."""
         return bool(self.get_register_value(self._REG_ADDR_SYS) & self._ADS_CRC_MASK)
 
     def read_single_register(self, address: int) -> int:
@@ -991,6 +991,10 @@ class ADS114S0x(ADCBase):
     def discard_settling_reads(self, n: int = 1, timeout_ms: int = 200) -> None:
         """
         Discard a few reads after changing MUX to reduce charge-injection artifacts.
+
+        Args:
+            n (int): Number of reads to discard. Defaults to 1.
+            timeout_ms (int): Timeout in milliseconds to wait for each DRDY. Defaults to 200.
         """
         for _ in range(max(0, n)):
             self.send_start()
@@ -1001,6 +1005,7 @@ class ADS114S0x(ADCBase):
         Convert a signed 16-bit ADC code to a voltage in volts.
 
         Uses the full-scale formula: Vin = code * (Vref / gain) / 32768.
+
         Args:
             code16 (int): Signed 16-bit ADC code in the range [-32768, 32767].
 
@@ -1245,12 +1250,12 @@ class ADS131M0x(ADCBase):
         Update the ADC data by reading the latest voltage values in millivolts.
         Attempts to read a maximum of 1000 times before throwing an error.
         """
-        MAX_ATTEMPTS = 1000
+        max_attempts = 1000
         attempts = 0
         while not self._ready_to_read():
             sleep(0.001)
             attempts += 1
-            if attempts > MAX_ATTEMPTS:
+            if attempts > max_attempts:
                 raise RuntimeError(
                     "Couldn't connect to the ADC, please ensure that the device is connected and powered on."
                 )
@@ -1262,8 +1267,6 @@ class ADS131M0x(ADCBase):
         Perform offset and gain calibration on the ADC.
         """
         self._offset_calibration()
-        # if self._gain_error is not None:
-        #     self._gain_calibration()
 
     def read_register(self, address: int) -> int:
         """
@@ -1379,7 +1382,7 @@ class ADS131M0x(ADCBase):
         """Send SPI message to ADS131M0x.
 
         Args:
-         - msg (List[int]): message to be sent to the ADS131M0x separated into bytes.
+            msg (list[int]): message to be sent to the ADS131M0x separated into bytes.
         Returns:
             list[int]: The response from the device, representing the entire frame.
         """
@@ -1393,12 +1396,12 @@ class ADS131M0x(ADCBase):
         Args:
             state (bool): If True, enables the channel clocks; if False, disables them.
         """
-        OSR = (self._clock_freq / 2) / self._data_rate
-        OSR_reg = int(math.log2(OSR) - 7)
+        osr = (self._clock_freq / 2) / self._data_rate
+        osr_reg = int(math.log2(osr) - 7)
         self._ENABLE_CHANNELS_CLOCK &= ~(0b111 << 2)
-        self._ENABLE_CHANNELS_CLOCK |= OSR_reg << 2
+        self._ENABLE_CHANNELS_CLOCK |= osr_reg << 2
         self._DISABLE_CHANNELS_CLOCK &= ~(0b111 << 2)
-        self._DISABLE_CHANNELS_CLOCK |= OSR_reg << 2
+        self._DISABLE_CHANNELS_CLOCK |= osr_reg << 2
         if state is True:
             self.write_register(self._CLOCK_REG, self._ENABLE_CHANNELS_CLOCK)
         elif state is False:
@@ -1494,8 +1497,8 @@ class ADS131M0x(ADCBase):
     def _read_data_millivolts(self) -> Any:
         """Returns channel readings in millivolts."""
         self._data_counts = self._read_data_counts()
-        mV = 1000 * self._data_counts / 2 ** (self._RESOLUTION - 1) * self._voltage_reference
-        return mV
+        mv = 1000 * self._data_counts / 2 ** (self._RESOLUTION - 1) * self._voltage_reference
+        return mv
 
     def _read_data_counts(self) -> np.ndarray:
         """Returns channel readings in counts ranging from -2^23 -> 2^23-1"""
