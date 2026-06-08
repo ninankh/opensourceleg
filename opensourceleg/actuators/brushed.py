@@ -6,8 +6,9 @@ import numpy as np
 from gpiozero import OutputDevice, PWMOutputDevice
 from gpiozero.pins.lgpio import LGPIOFactory
 
-from opensourceleg.actuators.base import CONTROL_MODE_CONFIGS, ActuatorBase, ControlModeConfig
+from opensourceleg.actuators.base import CONTROL_MODE_CONFIGS, MOTOR_CONSTANTS, ActuatorBase, ControlModeConfig
 from opensourceleg.logging import LOGGER
+from opensourceleg.sensors.base import EncoderCounterBase
 
 # Maxon x VNH7070AY specifications
 MAXON_MODELS: dict[str, dict[str, Any]] = {
@@ -95,13 +96,13 @@ class MaxonActuator(ActuatorBase):
         ina_pin: int = 24,
         inb_pin: int = 25,
         gear_ratio: float = 6.6,
-        frequency: float = 6000,
+        frequency: int = 6000,
         offline: bool = False,
         pwm_maximum_command: float = 0.3,
         pwm_minimum_command: float = 0.07,
         pwm_lower_limit: float = 0.02,
         tag: str = "maxon_actuator",
-        motor_constants=None,
+        motor_constants: Optional[MOTOR_CONSTANTS] = None,
     ) -> None:
         """
         Initialize Maxon motor.
@@ -111,7 +112,7 @@ class MaxonActuator(ActuatorBase):
             ina_pin (int): GPIO pin number for motor direction input A. Defaults is 24.
             inb_pin (int): GPIO pin number for motor direction input B. Defaults is 25.
             gear_ratio (float): Gearbox reduction ratio. Defaults is 6.6.
-            frequency (float): PWM frequency in Hz. Defaults is 6000.
+            frequency (int): PWM frequency in Hz. Defaults is 6000.
             offline (bool): If True, skips GPIO initialization. Defaults is False.
             pwm_maximum_command (float): Maximum allowable PWM duty cycle. Defaults is 0.3.
             pwm_minimum_command (float): Minimum PWM duty cycle that produces motion. Defaults is 0.07.
@@ -138,12 +139,6 @@ class MaxonActuator(ActuatorBase):
         if not self._is_offline:
             self._factory = LGPIOFactory()
 
-            # self.speed_control = PWMOutputDevice(
-            #     enable_pin,
-            #     pin_factory=self._factory,
-            #     frequency=self.frequency
-            # )
-            # self.direction = Motor(forward=ina_pin, backward=inb_pin)
             self.speed_control = PWMOutputDevice(self.enable_pin, frequency=8000, initial_value=0)
             self.inb = OutputDevice(self.inb_pin, initial_value=False)
             self.ina = OutputDevice(self.ina_pin, initial_value=False)
@@ -174,63 +169,70 @@ class MaxonActuator(ActuatorBase):
         if self.encoder_counter:
             self.motor_position_cts = self.encoder_counter.count
         else:
-            self.motor_position_cts = None
+            self.motor_position_cts = 0.0
         self.motor_position_mm = self.cts_to_mm(self.motor_position_cts)
         self.motor_position_perc = self.cts_to_perc(self.motor_position_cts)
 
-    def set_motor_impedance(self) -> None:
+    def set_motor_impedance(self, value: float = 0.0) -> None:
         """Set the motor impedance. Not yet supported by this library."""
         raise NotImplementedError("Set motor impedance not implemented. Motor should be controlled by position or pwm.")
 
-    def set_motor_voltage(self) -> None:
+    def set_motor_voltage(self, value: float = 0.0) -> None:
         """Set the motor voltage. Not yet supported by this library."""
         raise NotImplementedError("Set motor voltage not implemented. Control the motor by setting PWM.")
 
-    def set_motor_current(self) -> None:
+    def set_motor_current(self, value: float = 0.0) -> None:
         """Set the motor current. Not yet supported by this library."""
         raise NotImplementedError("Set motor current not implemented. Control the motor by setting PWM.")
 
-    def set_motor_position(self) -> None:
+    def set_motor_position(self, value: float = 0.0) -> None:
         """Set the motor position. Not yet supported by this library."""
         raise NotImplementedError("Set motor position not implemented. Control the motor by setting PWM.")
 
-    def set_motor_torque(self) -> None:
+    def set_motor_torque(self, value: float = 0.0) -> None:
         """Set the motor torque. Not yet supported by this library."""
         raise NotImplementedError("Set motor torque not implemented. Control the motor by setting PWM.")
 
-    def set_output_torque(self) -> None:
+    def set_output_torque(self, value: float = 0.0) -> None:
         """Set the output torque. Not yet supported by this library."""
         raise NotImplementedError("Set output torque not implemented. Control the motor by setting PWM.")
 
-    def set_output_impedance(self) -> None:
+    def set_output_impedance(self, value: float = 0.0) -> None:
         """Set the output impedance. Not yet supported by this library."""
         raise NotImplementedError("Set output impedance not implemented. Control the motor by setting PWM.")
 
-    def set_impedance_gains(self) -> None:
+    def set_impedance_gains(self, k: float, b: float) -> None:
         """Set impedance control gains. Not yet supported by this library."""
         raise NotImplementedError("Set impedance gains not implemented. Motor should be controlled by position or pwm.")
 
-    def set_current_gains(self) -> None:
+    def set_current_gains(self, kp: float, ki: float, kd: float, ff: float) -> None:
         """Set current control gains. Not yet supported by this library."""
         raise NotImplementedError("Set current gains not implemented. Motor should be controlled by position or pwm.")
 
-    def set_position_gains(self, K_p: float = 0.015, K_i: float = 2, K_d: float = 0.0001) -> None:
+    def set_position_gains(self, K_p: float = 0.015, K_i: float = 2, K_d: float = 0.0001, ff: float = 0.0) -> None:
         """Set position control gains."""
         self.K_p = K_p  # Proportional gain
         self.K_i = K_i  # Integral gain
         self.K_d = K_d  # Derivative gain
 
-    def _set_impedance_gains(self) -> None:
+    def _set_impedance_gains(self, k: float = 0.0, b: float = 0.0) -> None:
         """Set impedance control gains. Not yet supported by this library."""
         raise NotImplementedError("Set impedance gains not implemented. Motor should be controlled by position or pwm.")
 
     def home(
         self,
+        homing_voltage: int = 2000,
+        homing_frequency: Optional[int] = None,
+        homing_direction: int = -1,
+        output_position_offset: float = 0.0,
+        current_threshold: int = 5000,
+        velocity_threshold: float = 0.001,
+        callback: Optional[Callable[[], None]] = None,
+        *,
         homing_pwm: float = 0.25,
         sample_rate: float = 0.05,
         position_threshold: int = 200,
         home_zero: bool = True,
-        callback: Optional[Callable] = None,
         timeout_s: float = 8.0,
     ) -> None:
         """
@@ -392,20 +394,20 @@ class MaxonActuator(ActuatorBase):
         """
         return percentage * self.scale_perc
 
-    def cts_to_perc(self, counts: int) -> float:
+    def cts_to_perc(self, counts: float) -> float:
         """
         Convert a percentage of full range of motion for the motor in one direction
         to encoder counts.
 
          Args:
-            counts (int): Encoder count value.
+            counts (float): Encoder count value.
 
         Returns:
             float: Position as a percentage.
         """
         return counts / self.scale_perc
 
-    def mm_to_cts(self, mm: float) -> int:
+    def mm_to_cts(self, mm: float) -> float:
         """
         Convert a number of encoder counts to a number of mm moved assuming a
         rotary to linear transmission like a lead screw.
@@ -414,17 +416,17 @@ class MaxonActuator(ActuatorBase):
             mm (float): Linear displacement in millimeters.
 
         Returns:
-            int: Corresponding encoder count.
+            float: Corresponding encoder count.
         """
         return mm * self.scale
 
-    def cts_to_mm(self, counts: int) -> float:
+    def cts_to_mm(self, counts: float) -> float:
         """
         Convert a number of encoder counts to a number of mm moved assuming a
         rotary to linear transmission like a lead screw.
 
         Args:
-            counts (int): Encoder count value.
+            counts (float): Encoder count value.
 
         Returns:
             float: Linear displacement in millimeters.
@@ -485,7 +487,7 @@ class MaxonActuator(ActuatorBase):
         self.slider_min_mm = self.slider_min_counts / self.scale
         self.slider_max_mm = self.slider_max_counts / self.scale
 
-    def lpfilter1(self, x, y_past) -> float:
+    def lpfilter1(self, x: list[float], y_past: list[float]) -> float:
         """
          Apply a first-order low-pass IIR filter to the derivative term.
 
@@ -504,7 +506,7 @@ class MaxonActuator(ActuatorBase):
         y = -(a1[1] * y_past[0]) + b1[0] * x[0] + b1[1] * x[1]
         return y
 
-    def pid_ctrl_position(self, error_encoder, dt) -> float:
+    def pid_ctrl_position(self, error_encoder: float, dt: float) -> float:
         """
         Set the motor position with respect to a percentage (0-100) of the full range of motion for the
         motor in one direction.
@@ -575,7 +577,7 @@ class MaxonActuator(ActuatorBase):
 
         self.speed_control.value = pwm
 
-    def set_motor_encoder(self, encoder_counter) -> None:
+    def set_motor_encoder(self, encoder_counter: EncoderCounterBase) -> None:
         """
         Set the motor encoder counter.
 
