@@ -1,13 +1,6 @@
 """
-Original author, Federico Bolanos.
-Updated by Cameron Cobb for Python 3 (March 17th, 2019).
-Updated by David Lam for opensourceleg (March, 2026).
-Updated by Emily Bywater, also for opensourceleg (March, 2026)
-
-Usage: import LS7366R then create an object by calling enc = LS7366R(csx, clk, byte_mode)
+Import LS7366R then create an object by calling enc = LS7366R(csx, clk, byte_mode)
 csx is either CE0 or CE1, clk is the speed, byte_mode is the bytemode 1-4 the resolution of your counter.
-example: lever.Encoder(0, 1000000, 4)
-These are the default values.
 """
 
 from time import sleep
@@ -67,7 +60,7 @@ class LS7366R(EncoderCounterBase):
         max_val: int = 4294967295,  # for four byte mode, only correct for four byte mode
         spi_bus: int = 0,
         offline: bool = False,
-        tag: str = "encoder_counter",
+        tag: str = "EncoderCounter",
     ) -> None:
         """
         Initialize the LS7366R encoder counter and configure the SPI interface.
@@ -76,16 +69,15 @@ class LS7366R(EncoderCounterBase):
             csx (int): SPI chip select line (CE0 or CE1). Defaults to 0.
             clk (int): SPI clock speed in Hz. Defaults to 1000000.
             byte_mode (int): Counter resolution in bytes (1 to 4). Defaults to 4.
-            max_val (int): Maximum counter value for signed conversion. Only correct for four-byte mode.
-                Defaults is 4294967295.
-            spi_bus (int): SPI bus number. Defaults is 0.
-            offline (bool): If True, skips SPI initialization. Defaults is False.
-            tag (str): Human-readable identifier for this encoder instance. Defaults is "encoder_counter".
+            max_val (int): Maximum counter value for signed conversion. Defaults to 4294967295.
+            spi_bus (int): SPI bus number. Defaults to 0.
+            offline (bool): If True, skips SPI initialization. Defaults to False.
+            tag (str): Human-readable identifier for this encoder instance. Defaults to "EncoderCounter".
         """
 
         super().__init__(tag=tag, offline=offline)
 
-        self.counterSize = byte_mode  # Sets the byte mode that will be used
+        self.counter_size = byte_mode  # Sets the byte mode that will be used
         self.max_val = max_val  # Maximum value for the counter, used for signed count conversion
 
         self.spi = spidev.SpiDev()  # Initialize object
@@ -102,7 +94,7 @@ class LS7366R(EncoderCounterBase):
 
         sleep(0.1)  # Rest
 
-        self.spi.xfer2([self.WRITE_MODE1, self.CounterConfig.MODES[self.counterSize - 1]])
+        self.spi.xfer2([self.WRITE_MODE1, self.CounterConfig.MODES[self.counter_size - 1]])
 
     def close(self) -> None:
         LOGGER.info("Closing Encoder...")
@@ -142,25 +134,24 @@ class LS7366R(EncoderCounterBase):
         Returns:
             int: Signed encoder count.
         """
-        readTransaction = [self.READ_COUNTER]
+        read_transaction = [self.READ_COUNTER]
 
-        # Replaces the entire 2-line loop
-        readTransaction.extend([0] * self.counterSize)
+        read_transaction.extend([0] * self.counter_size)
 
-        data = self.spi.xfer2(readTransaction)
+        data = self.spi.xfer2(read_transaction)
 
-        EncoderCount = 0
-        for i in range(self.counterSize):
-            EncoderCount = (EncoderCount << 8) + data[i + 1]
+        encoder_count = 0
+        for i in range(self.counter_size):
+            encoder_count = (encoder_count << 8) + data[i + 1]
 
         if data[1] != 255:
-            self.EncoderCount = EncoderCount
+            self.encoder_count = encoder_count
         else:
-            self.EncoderCount = EncoderCount - (self.max_val + 1)
+            self.encoder_count = encoder_count - (self.max_val + 1)
 
-        return self.EncoderCount
+        return self.encoder_count
 
-    def readStatus(self) -> int:
+    def read_status(self) -> int:
         """
         Read the status register of the encoder over SPI.
 
