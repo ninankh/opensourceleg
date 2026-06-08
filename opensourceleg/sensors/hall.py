@@ -25,7 +25,7 @@ class DRV5056(HallBase):
     _V_TO_MV = 1000
 
     # Helpful dictionaries
-    _SENSOR_TO_SENS: ClassVar[dict[str, int]] = {
+    _SENSOR_TO_SENS: ClassVar[dict[str, float]] = {
         "A1": 200,  # mV / mT
         "A2": 100,
         "A3": 50,
@@ -181,7 +181,11 @@ class DRV5056(HallBase):
         Returns:
             float: Estimated Magnetic field in millitesla (mT).
 
+        Raises:
+        ValueError: If the sensor sensitivity has not been set.
         """
+        if self._sens_v_per_mT is None:
+            raise ValueError("Sensor sensitivity (_sens_v_per_mT) is not set. ")
         return (volts - (vcc / 2.0)) / self._sens_v_per_mT
 
     @property
