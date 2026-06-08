@@ -119,9 +119,9 @@ class DRV5056(HallBase):
         """
         Configure Hall effect settings based on part number and supply voltage.
 
-         Raises:
-             ValueError: If sensor_num is not a supported part number.
-             ValueError: If supply voltage is outside the supported range.
+        Raises:
+            ValueError: If sensor_num is not a supported part number.
+            ValueError: If supply voltage is outside the supported range.
         """
         # --- SENSITIVITY ---
         if self._sensor_num not in self._SENSOR_TO_SENS:
@@ -156,9 +156,11 @@ class DRV5056(HallBase):
             self._sensitivity = self.base_sensitivity
 
     def start(self) -> None:
+        """Start the Hall effect sensor by enabling the data stream."""
         self._streaming = True
 
     def stop(self) -> None:
+        """Stop the Hall effect sensor by disabling the data stream."""
         self._streaming = False
 
     def update(self) -> None:
@@ -182,7 +184,7 @@ class DRV5056(HallBase):
             float: Estimated Magnetic field in millitesla (mT).
 
         Raises:
-        ValueError: If the sensor sensitivity has not been set.
+            ValueError: If the sensor sensitivity has not been set.
         """
         if self._sens_v_per_mT is None:
             raise ValueError("Sensor sensitivity (_sens_v_per_mT) is not set. ")
@@ -201,7 +203,7 @@ class DRV5056(HallBase):
     @property
     def voltage(self) -> float:
         """
-        Get the latest Hall effect data in millivolts.
+        Get the latest Hall effect data.
 
         Returns:
             float: Voltage reading from the sensor.
