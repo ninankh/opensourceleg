@@ -136,7 +136,7 @@ class VSO(RobotBase[TActuator, TSensor]):
             return None
 
         _actuator.set_control_mode(mode=CONTROL_MODES.POSITION)
-        _actuator.set_current_gains()
+        _actuator.set_position_gains()
 
         time.sleep(0.1)
 
