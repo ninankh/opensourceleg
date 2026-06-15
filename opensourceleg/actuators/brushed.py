@@ -303,14 +303,13 @@ class MaxonActuator(ActuatorBase):
     @property
     def motor_position(self) -> float:
         """
-        Motor position in encoder counts, millimeters, and percent.
+        Motor position in radians.
 
         Returns:
-            tuple[int | None, float | None, float | None]: A tuple of
-                (encoder counts, position in mm, position as percent).
+            float : Motor position in radians.
         """
         self.update()
-        return self.motor_position_cts, self.motor_position_mm, self.motor_position_perc
+        return self.motor_position_cts * 2 * np.pi / 1024.0
 
     @property
     def motor_velocity(self) -> float:
