@@ -6,7 +6,12 @@ import numpy as np
 from gpiozero import OutputDevice, PWMOutputDevice
 from gpiozero.pins.lgpio import LGPIOFactory
 
-from opensourceleg.actuators.base import CONTROL_MODE_CONFIGS, MOTOR_CONSTANTS, ActuatorBase, ControlModeConfig
+from opensourceleg.actuators.base import (
+    CONTROL_MODE_CONFIGS,
+    MOTOR_CONSTANTS,
+    ControlModeConfig,
+    PositionControlActuatorBase,
+)
 from opensourceleg.logging import LOGGER
 from opensourceleg.sensors.base import EncoderCounterBase
 
@@ -82,7 +87,7 @@ MAXON_CONTROL_MODE_CONFIGS = CONTROL_MODE_CONFIGS(
 )
 
 
-class MaxonActuator(ActuatorBase):
+class MaxonActuator(PositionControlActuatorBase):
     """
     Class for controlling a Maxon brushed motor with the VNH7070AY driver.
 
@@ -120,6 +125,14 @@ class MaxonActuator(ActuatorBase):
             tag (str): Human-readable identifier for this actuator instance. Defaults is "maxon_actuator".
             motor_constants (optional): Motor constant parameters. Defaults is None.
         """
+        if motor_constants is None:
+            motor_constants = MOTOR_CONSTANTS(
+                MOTOR_COUNT_PER_REV=1024,
+                NM_PER_AMP=0.00652,
+                MAX_CASE_TEMPERATURE=125.0,
+                MAX_WINDING_TEMPERATURE=125.0,
+            )
+
         super().__init__(
             gear_ratio=gear_ratio,
             offline=offline,
@@ -171,29 +184,9 @@ class MaxonActuator(ActuatorBase):
         self.motor_position_mm = self.cts_to_mm(self.motor_position_cts)
         self.motor_position_perc = self.cts_to_perc(self.motor_position_cts)
 
-    def set_motor_impedance(self, value: float = 0.0) -> None:
-        """Set the motor impedance. Not yet supported by this library."""
-        raise NotImplementedError("Set motor impedance not implemented. Motor should be controlled by position or pwm.")
-
-    def set_motor_voltage(self, value: float = 0.0) -> None:
-        """Set the motor voltage. Not yet supported by this library."""
-        raise NotImplementedError("Set motor voltage not implemented. Control the motor by setting PWM.")
-
-    def set_motor_current(self, value: float = 0.0) -> None:
-        """Set the motor current. Not yet supported by this library."""
-        raise NotImplementedError("Set motor current not implemented. Control the motor by setting PWM.")
-
     def set_motor_position(self, value: float = 0.0) -> None:
         """Set the motor position. Not yet supported by this library."""
         raise NotImplementedError("Set motor position not implemented. Control the motor by setting PWM.")
-
-    def set_motor_torque(self, value: float = 0.0) -> None:
-        """Set the motor torque. Not yet supported by this library."""
-        raise NotImplementedError("Set motor torque not implemented. Control the motor by setting PWM.")
-
-    def set_output_torque(self, value: float = 0.0) -> None:
-        """Set the output torque. Not yet supported by this library."""
-        raise NotImplementedError("Set output torque not implemented. Control the motor by setting PWM.")
 
     def set_output_impedance(self, value: float = 0.0) -> None:
         """Set the output impedance. Not yet supported by this library."""
@@ -202,10 +195,6 @@ class MaxonActuator(ActuatorBase):
     def set_impedance_gains(self, k: float, b: float) -> None:
         """Set impedance control gains. Not yet supported by this library."""
         raise NotImplementedError("Set impedance gains not implemented. Motor should be controlled by position or pwm.")
-
-    def set_current_gains(self, kp: float, ki: float, kd: float, ff: float) -> None:
-        """Set current control gains. Not yet supported by this library."""
-        raise NotImplementedError("Set current gains not implemented. Motor should be controlled by position or pwm.")
 
     def set_position_gains(self, k_p: float = 0.015, k_i: float = 2, k_d: float = 0.0001, ff: float = 0.0) -> None:
         """Set position control gains."""
@@ -217,21 +206,14 @@ class MaxonActuator(ActuatorBase):
         """Set impedance control gains. Not yet supported by this library."""
         raise NotImplementedError("Set impedance gains not implemented. Motor should be controlled by position or pwm.")
 
-    def home(
+    def home(  # type: ignore[override]
         self,
-        homing_voltage: int = 2000,
-        homing_frequency: Optional[int] = None,
-        homing_direction: int = -1,
-        output_position_offset: float = 0.0,
-        current_threshold: int = 5000,
-        velocity_threshold: float = 0.001,
-        callback: Optional[Callable[[], None]] = None,
-        *,
         homing_pwm: float = 0.25,
         sample_rate: float = 0.05,
         position_threshold: int = 200,
         home_zero: bool = True,
         timeout_s: float = 8.0,
+        callback: Optional[Callable[[], None]] = None,
     ) -> None:
         """
         Home the actuator by driving to a mechanical hard stop.
@@ -242,24 +224,14 @@ class MaxonActuator(ActuatorBase):
         on the VSO; the hard stop corresponds to 100% stiffness.
 
         Args:
-            homing_voltage (int): Voltage to use for homing.
-            homing_frequency (Optional[int]): Frequency to use for homing.
-            homing_direction (int): Direction to move the actuator during homing.
-            output_position_offset (float): Offset to add to the output position.
-            current_threshold (int): Current threshold to stop homing.
-            velocity_threshold (float): Velocity threshold to stop homing.
-            callback (Optional[Callable[[], None]]): Optional callback function to be
-                called when homing completes.
-            homing_pwm (float): PWM duty cycle applied during homing.
-                Defaults to 0.25.
-            sample_rate (float): Time in seconds between encoder samples.
-                Defaults to 0.05.
-            position_threshold (int): Maximum encoder count change between
-                samples that is considered stationary. Defaults to 200.
-            home_zero (bool): If True, home to the zero-stiffness position.
-                If False, home to the full-stiffness hard stop. Defaults to True.
-            timeout_s (float): Maximum homing duration in seconds.
-                Defaults to 8.0.
+            homing_pwm (float): PWM duty cycle applied during homing. Defaults to 0.25.
+            sample_rate (float): Time in seconds between encoder samples. Defaults to 0.05.
+            position_threshold (int): Maximum encoder count change between samples that is considered stationary.
+                Defaults to 200.
+            home_zero (bool): If True, home to the zero-stiffness position. If False, home
+                to the full-stiffness hard stop. Defaults to True.
+            timeout_s (float): Maximum homing duration in seconds. Defaults to 8.0.
+            callback (Optional[Callable[[], None]]): Optional callback function to be called when homing completes.
         """
         time.sleep(1)
         keep_going = True
@@ -320,37 +292,6 @@ class MaxonActuator(ActuatorBase):
             float: Always returns 0.0.
         """
         LOGGER.warning("Motor velocity reading is not available.")
-        return 0.0
-
-    @property
-    def motor_voltage(self) -> float:
-        """
-        Motor voltage (V). Not supported by this driver.
-
-        Returns:
-            float: Always returns 0.0.
-        """
-        LOGGER.warning("Motor voltage reading is not available.")
-        return 0.0
-
-    @property
-    def motor_current(self) -> float:
-        """
-        Motor current (A). Not supported by this driver.
-
-        Raises:
-            NotImplementedError: Always raised; current reading is not available.
-        """
-        raise NotImplementedError("Motor current reading is not available.")
-
-    @property
-    def motor_torque(self) -> float:
-        """Motor torque (Nm). Not supported by this driver.
-
-        Returns:
-            float: Always returns 0.0.
-        """
-        LOGGER.warning("Motor torque reading is not available.")
         return 0.0
 
     @property

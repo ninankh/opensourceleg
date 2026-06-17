@@ -1226,6 +1226,9 @@ class PositionControlActuatorBase(ActuatorBase):
     def set_motor_current(self, value: float) -> None:
         raise UnsupportedControlModeError(f"{type(self).__name__} does not support current control.")
 
+    def set_motor_impedance(self, value: float) -> None:
+        raise UnsupportedControlModeError(f"{type(self).__name__} does not support impedance control.")
+
     def set_motor_torque(self, value: float) -> None:
         raise UnsupportedControlModeError(f"{type(self).__name__} does not support torque control.")
 
