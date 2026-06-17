@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Callable, Optional, Union
+from typing import Callable, Optional, Union, cast
 
 import numpy as np
 
@@ -34,6 +34,7 @@ class VSO(RobotBase[TActuator, TSensor]):
         sample_rate: float = 0.05,
         position_threshold: int = 200,
         home_zero: bool = True,
+        timeout_s: float = 8.0,
         callbacks: Optional[dict[str, Callable]] = None,
     ) -> None:
         """
@@ -55,13 +56,15 @@ class VSO(RobotBase[TActuator, TSensor]):
         LOGGER.info("Starting VSO homing routine.")
 
         for actuator in self.actuators.values():
+            maxon = cast(MaxonActuator, actuator)
             callback = callbacks.get(actuator.tag, None) if callbacks is not None else None
-            actuator.home(
+            maxon.home(
                 homing_pwm=homing_pwm,
                 sample_rate=sample_rate,
                 position_threshold=position_threshold,
                 home_zero=home_zero,
                 callback=callback,
+                timeout_s=timeout_s,
             )
 
         LOGGER.info("VSO homing complete. Spring-support is at hard stop.")
@@ -116,7 +119,7 @@ class VSO(RobotBase[TActuator, TSensor]):
             encoder_key: Key for self.sensors identifying the joint's output encoder.
             overwrite: If True, regenerate the map even when a saved file already exists.
         """
-        _actuator: ActuatorBase = self.actuators[actuator_key]
+        _actuator = cast(MaxonActuator, self.actuators[actuator_key])
         _encoder: SensorBase = self.sensors[encoder_key]
 
         if not _actuator.is_homed:
@@ -136,7 +139,7 @@ class VSO(RobotBase[TActuator, TSensor]):
             return None
 
         _actuator.set_control_mode(mode=CONTROL_MODES.POSITION)
-        _actuator.set_position_gains()
+        _actuator.set_position_gains(0.015, 2, 0.001, 0.0)  # default value for position gain
 
         time.sleep(0.1)
 
@@ -231,7 +234,7 @@ if __name__ == "__main__":
     vso = VSO[MaxonActuator, SensorBase](
         tag="VariableStiffnessOrthosis",
         actuators={
-            "ankle": MaxonActuator("ankle", offline=False, frequency=frequency),
+            "ankle": MaxonActuator(tag="ankle", offline=False, frequency=frequency),
         },
         sensors=dict[str, SensorBase](),
     )
