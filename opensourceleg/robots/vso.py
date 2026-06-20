@@ -183,9 +183,6 @@ class VSO(RobotBase[TActuator, TSensor]):
 
         np.save(file=f"./{_encoder.tag}_linearization_map.npy", arr=_coeffs)
 
-        _actuator.set_control_mode(mode=CONTROL_MODES.VOLTAGE)
-        _actuator.set_motor_voltage(value=0.0)
-
         LOGGER.info(
             msg=f"[{str.upper(_encoder.tag)}] Encoder map saved to './{_encoder.tag}_linearization_map.npy' and loaded."
         )
