@@ -69,7 +69,6 @@ def go_to_position(actuator: MaxonActuator, target_perc: float, position_logger:
                 dt = 1e-6  # guard against divide-by-zero in the PID
             last_time = current_time
 
-            # Safety: if we've run past the time limit the slider is likely jammed.
             if current_time - start_time > actuator.time_limit:
                 position_logger.warning("Slider may be jammed - check prototype (PWM set to zero for safety).")
                 actuator.stop()
@@ -123,7 +122,7 @@ def position_control():
             position_logger.info(f"Homing complete. position = {actuator.motor_position_mm:.3f} mm)")
 
         for target_perc in TARGET_PERC:
-            arrived = go_to_position(actuator, target_perc)
+            arrived = go_to_position(actuator, target_perc, position_logger)
             actuator.update()
             position_logger.info(
                 f"target {target_perc:.2f} % -> {'arrived' if arrived else 'TIMED OUT'} "
