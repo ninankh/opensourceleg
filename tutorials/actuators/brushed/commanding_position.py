@@ -8,7 +8,7 @@ from opensourceleg.logging.logger import Logger
 from opensourceleg.sensors.encoderCounter import LS7366R
 
 TIME_TO_STEP = 1.0
-FREQUENCY = 10000
+FREQUENCY = 200
 DT = 1 / FREQUENCY
 
 TARGET_PERC = [30.0]  # Target stiffness position in percentage. Edit here to change target position.
