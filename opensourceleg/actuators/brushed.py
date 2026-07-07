@@ -129,7 +129,7 @@ class MaxonActuator(PositionControlActuatorBase):
             motor_constants = MOTOR_CONSTANTS(
                 MOTOR_COUNT_PER_REV=1024,
                 NM_PER_AMP=0.00652,
-                MAX_CASE_TEMPERATURE=125.0,
+                MAX_CASE_TEMPERATURE=85,
                 MAX_WINDING_TEMPERATURE=125.0,
             )
 
