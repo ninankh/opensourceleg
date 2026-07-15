@@ -4,6 +4,8 @@ import pytest
 
 from opensourceleg.sensors.base import (
     EncoderBase,
+    EncoderCounterBase,
+    HallBase,
     IMUBase,
     LoadcellBase,
     SensorBase,
@@ -209,3 +211,40 @@ def mock_imu():
 # Test IMUBase repr
 def test_imu_base_repr(mock_imu: MockIMU):
     assert mock_imu.__repr__() == "MockIMU[MockIMU]"
+
+
+# Creating a Mock EncoderCounter Class
+class MockEncoderCounter(EncoderCounterBase, MockSensor):
+    def __init__(self, tag: str):
+        super().__init__(tag=tag)
+
+    @property
+    def count(self):
+        pass
+
+
+@pytest.fixture
+def mock_encoder_counter():
+    return MockEncoderCounter(tag="MockEncoderCounter")
+
+
+# Test EncoderCounterBase repr
+def test_encoder_counter_base_repr(mock_encoder_counter: MockEncoderCounter):
+    assert mock_encoder_counter.__repr__() == "EncoderCounterBase"
+
+
+# Creating a Mock Hall Class
+class MockHall(HallBase, MockSensor):
+    @property
+    def field_mT(self):
+        pass
+
+
+@pytest.fixture
+def mock_hall():
+    return MockHall(tag="MockHall")
+
+
+# Test HallBase repr
+def test_hall_base_repr(mock_hall: MockHall):
+    assert mock_hall.__repr__() == "MockHall[MockHall]"
