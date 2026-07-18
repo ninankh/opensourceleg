@@ -281,8 +281,6 @@ class ADS114S0x(ADCBase):
     _ADS_SENDSTATUS_DISABLE = 0x00
     _ADS_SENDSTATUS_ENABLE = 0x01
 
-    _register_map = [0] * _NUM_REGISTERS
-
     # SPI Configuration
     _SPI_SPEED = 2000000  # 2 MHz
     _SPI_BUS = 1
@@ -311,7 +309,7 @@ class ADS114S0x(ADCBase):
         tag: str = "ADS114S08",
         spi_bus: int = 0,
         spi_cs: int = 0,
-        data_rate: int = 500,
+        data_rate: int = 400,
         pga_gain: int = 1,
         voltage_reference: float = _INT_VREF,
         drdy: int = 16,
@@ -354,6 +352,7 @@ class ADS114S0x(ADCBase):
         self._data_rate = data_rate
         self._drdy = DigitalInputDevice(drdy, pull_up=False)
         self._channels: dict[str, ChannelConfig] = {}
+        self._register_map = [0] * self._NUM_REGISTERS
         LOGGER.info(f"ADC initialized with tag: {self._tag}")
 
     def __repr__(self) -> str:
@@ -500,7 +499,7 @@ class ADS114S0x(ADCBase):
         Returns:
             The 8-bit register value
         """
-        if address > self._NUM_REGISTERS:
+        if address >= self._NUM_REGISTERS:
             raise ValueError("Register address out of range")
         return self._register_map[address]
 
@@ -522,7 +521,7 @@ class ADS114S0x(ADCBase):
         Returns:
             8-bit register contents
         """
-        if address > self._NUM_REGISTERS:
+        if address >= self._NUM_REGISTERS:
             raise ValueError("Register address out of range")
 
         # Build TX array
@@ -564,7 +563,7 @@ class ADS114S0x(ADCBase):
             address: Register address to write
             data: 8-bit data to write
         """
-        if address > self._NUM_REGISTERS:
+        if address >= self._NUM_REGISTERS:
             raise ValueError("Register address out of range")
 
         # Build TX array
