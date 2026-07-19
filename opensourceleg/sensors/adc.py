@@ -352,6 +352,7 @@ class ADS114S0x(ADCBase):
         self._data_rate = data_rate
         self._drdy = DigitalInputDevice(drdy, pull_up=False)
         self._channels: dict[str, ChannelConfig] = {}
+        self._data: Optional[list[float]] = None
         self._register_map = [0] * self._NUM_REGISTERS
         LOGGER.info(f"ADC initialized with tag: {self._tag}")
 
