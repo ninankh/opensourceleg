@@ -3,6 +3,7 @@ from unittest.mock import Mock
 import pytest
 
 from opensourceleg.sensors.base import (
+    ADCBase,
     EncoderBase,
     EncoderCounterBase,
     HallBase,
@@ -211,6 +212,52 @@ def mock_imu():
 # Test IMUBase repr
 def test_imu_base_repr(mock_imu: MockIMU):
     assert mock_imu.__repr__() == "MockIMU[MockIMU]"
+
+
+# Creating a Mock ADC Class
+class MockADC(ADCBase, MockSensor):
+    def __init__(self, tag: str):
+        super().__init__(tag=tag)
+
+
+@pytest.fixture
+def mock_adc():
+    return MockADC(tag="MockADC")
+
+
+# Test ADCBase repr
+def test_adc_base_repr(mock_adc: MockADC):
+    assert mock_adc.__repr__() == "ADCBase"
+
+
+# Test ADCBase tag is still set correctly despite the overridden repr
+def test_adc_base_tag(mock_adc: MockADC):
+    assert mock_adc.tag == "MockADC"
+
+
+# Test ADCBase reset/calibrate are concrete no-ops (not abstract)
+def test_adc_base_reset_and_calibrate_are_noops(mock_adc: MockADC):
+    assert mock_adc.reset() is None
+    assert mock_adc.calibrate() is None
+
+
+# Test ADCBase offline config extends SensorBase
+def test_adc_base_offline_methods():
+    assert ADCBase._OFFLINE_METHODS == ["start", "stop", "update", "reset", "calibrate"]
+    # ADC doesn't add properties, so it inherits SensorBase's
+    assert ADCBase._OFFLINE_PROPERTIES == SensorBase._OFFLINE_PROPERTIES
+    assert ADCBase._OFFLINE_PROPERTY_DEFAULTS == {"data": None, "is_streaming": True}
+
+
+# Test ADCBase context manager still works through the ADC subclass
+def test_adc_base_context_manager(mock_adc: MockADC):
+    mock_adc.start = Mock()
+    mock_adc.stop = Mock()
+    with mock_adc as adc:
+        assert adc == mock_adc
+        mock_adc.start.assert_called_once()
+        mock_adc.stop.assert_not_called()
+    mock_adc.stop.assert_called_once()
 
 
 # Creating a Mock EncoderCounter Class
