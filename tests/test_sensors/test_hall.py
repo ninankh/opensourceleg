@@ -17,14 +17,12 @@ def test_DRV5056_init():
     assert sensor._sensor_num == "A1"
     assert sensor._t_a == 23
     assert sensor._supply_voltage == 5
-    assert sensor._sens_v_per_mT is None
 
-    custom = hall.DRV5056(tag="MyHall", sensor_num="A3", t_a=25, supply_voltage=3.3, sens_v_per_mT=0.1)
+    custom = hall.DRV5056(tag="MyHall", sensor_num="A3", t_a=25, supply_voltage=3.3)
     assert custom.tag == "MyHall"
     assert custom._sensor_num == "A3"
     assert custom._t_a == 25
     assert custom._supply_voltage == 3.3
-    assert custom._sens_v_per_mT == 0.1
 
     # offline mode is not supported and should exit
     with pytest.raises(SystemExit):
@@ -127,12 +125,6 @@ def test_DRV5056_field_mT(sensor: hall.DRV5056):
     sensor.configure()
     field = sensor.field_mT
     assert field == sensor.field_strength
-
-
-# Test DRV5056 drv5056_field_mT
-def test_DRV5056_drv5056_field_mT():
-    sensor = hall.DRV5056(sens_v_per_mT=0.1)
-    assert sensor.drv5056_field_mT(volts=3.0, vcc=5.0) == pytest.approx((3.0 - 2.5) / 0.1)
 
 
 # Test DRV5056 drv5056_field_mT raises when sensitivity is not set
