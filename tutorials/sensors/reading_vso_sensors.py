@@ -36,29 +36,29 @@ def _hall_voltage(adc: ADS114S0x, channel_index: int = 0) -> float:
     return data[channel_index] / 1000.0
 
 
-def read_sensors(data_logger: Logger) -> None:
-    """Configure the VSO sensors and stream their readings to the data logger.
-
-    Args:
-        data_logger: Logger used to record the tracked sensor values to CSV.
-    """
+def initialize_sensors() -> dict:
     need_adc = True
     need_hall = True
     need_ankleEncoder = True
     need_encoderCounter = True
 
+    # Guard: Hall requires ADC
+    if need_hall and not need_adc:
+        LOGGER.warning("Hall effect requires ADC. Disabling Hall.")
+        need_hall = False
+
+    sensors = {}
+
     if need_adc:
-        adc_init = ADS114S0x(offline=OFFLINE, tag="adc", spi_bus=1, data_rate=2000, drdy=16, voltage_reference=1.65)
-    else:
-        adc_init = None
-
+        sensors["adc"] = ADS114S0x(
+            offline=OFFLINE, tag="adc", spi_bus=1, data_rate=2000, drdy=16, voltage_reference=1.65
+        )
     if need_hall:
-        hall_init = DRV5056(offline=OFFLINE, tag="hall_effect", sensor_num="A1", t_a=23, supply_voltage=3.3)
-    else:
-        hall_init = None
-
+        sensors["hallEffect_sensor"] = DRV5056(
+            offline=OFFLINE, tag="hall_effect", sensor_num="A1", t_a=23, supply_voltage=3.3
+        )
     if need_ankleEncoder:
-        ankleEncoder_init = AS5048B(
+        sensors["ankle_encoder"] = AS5048B(
             offline=OFFLINE,
             tag="joint_encoder_ankle",
             bus="/dev/i2c-3",
@@ -67,32 +67,29 @@ def read_sensors(data_logger: Logger) -> None:
             zero_position=0,
             enable_diagnostics=False,
         )
-    else:
-        ankleEncoder_init = None
+    if need_encoderCounter:
+        sensors["encoder_counter"] = LS7366R()
 
-    encoderCounter_init = LS7366R() if need_encoderCounter else None
+    return sensors
+
+
+def read_sensors(data_logger: Logger) -> None:
+    sensors = initialize_sensors()
 
     vso = VSO[MaxonActuator, SensorBase](
         tag="variableStiffnessOrthosis",
         actuators={},
-        sensors={
-            "adc": adc_init,
-            "hallEffect_sensor": hall_init,
-            "ankle_encoder": ankleEncoder_init,
-            "encoder_counter": encoderCounter_init,
-        },
+        sensors=sensors,
     )
     LOGGER.info("Finished setting up VSO.")
 
+    # setup
     adc = vso.sensors.get("adc")
-    if adc is None:
-        LOGGER.error("No ADC found — cannot read the Hall effect sensor. Aborting.")
-        return
-
-    adc.adc_configure_common(single_shot=True, filter_low_latency=True)
+    if adc is not None:
+        adc.adc_configure_common(single_shot=True, filter_low_latency=True)
 
     hall = vso.sensors.get("hallEffect_sensor")
-    if hall is not None:
+    if hall is not None and adc is not None:
         hall.configure()
         adc._channels["hall_drv5056_ain3"] = ChannelConfig(
             name="hall_drv5056_ain3",
@@ -101,6 +98,7 @@ def read_sensors(data_logger: Logger) -> None:
             units="mV",
         )
 
+    # Ankle encoder calibration
     calib_offset = 0.0
     ankle_sensor = vso.sensors.get("ankle_encoder")
     if ankle_sensor is not None:
@@ -112,41 +110,43 @@ def read_sensors(data_logger: Logger) -> None:
     else:
         LOGGER.warning("No ankle encoder found. Angle will not be captured.")
 
-    # Logged values
-    angle = 0.0
-
-    data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
-    data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
-
-    # Bug 3 fix: guard against encoder_counter being None before calling methods on it.
     encoder_counter = vso.sensors.get("encoder_counter")
     if encoder_counter is not None:
         encoder_counter.clear_counter()
+
+    # Tracked values
+    angle = 0.0
+
+    # if ankle_sensor is not None:
+    #     data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
+    if adc is not None:
+        data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
+    if encoder_counter is not None:
         data_logger.track_function(lambda: encoder_counter.encoder_count, name="encoderCounter_count")
-    else:
-        LOGGER.warning("No encoder counter found. Count will not be captured.")
 
     readout_interval = FREQUENCY // READ_FREQUENCY
 
     with vso:
         loop = SoftRealtimeLoop(dt=1 / FREQUENCY)
-        loop_count = 0
         t_start = time.monotonic()
 
         for loop_count, _ in enumerate(loop):
             vso.update()
 
-            angle_raw = SIDE * np.rad2deg(vso.sensors["ankle_encoder"].position) - calib_offset
-            angle = angle_raw if loop_count == 0 else ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
+            if ankle_sensor is not None:
+                angle_raw = SIDE * np.rad2deg(ankle_sensor.position) - calib_offset
+                angle = angle_raw if loop_count == 0 else ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
 
             data_logger.update()
             data_logger.flush_buffer()
 
             if loop_count % readout_interval == 0:
                 elapsed = time.monotonic() - t_start
-                hall_v = _hall_voltage(adc)
+                hall_v = _hall_voltage(adc, channel_index=0) if adc is not None else 0.0
                 print(
-                    f"\r  t={elapsed:6.1f}s" f"  angle={angle:+7.2f}°" f"  hall={hall_v:+.4f} V",
+                    f"\r  t={elapsed:6.1f}s"
+                    + (f"  angle={angle:+7.2f}°" if ankle_sensor is not None else "")
+                    + (f"  hall={hall_v:+.4f} V" if adc is not None else ""),
                     end="",
                     flush=True,
                 )
