@@ -37,8 +37,8 @@ def _hall_voltage(adc: ADS114S0x, channel_index: int = 0) -> float:
 
 
 def initialize_sensors() -> dict:
-    need_adc = True
-    need_hall = True
+    need_adc = False
+    need_hall = False
     need_ankleEncoder = True
     need_encoderCounter = True
 
@@ -83,49 +83,50 @@ def read_sensors(data_logger: Logger) -> None:
     )
     LOGGER.info("Finished setting up VSO.")
 
-    # setup
-    adc = vso.sensors.get("adc")
-    if adc is not None:
-        adc.adc_configure_common(single_shot=True, filter_low_latency=True)
-
-    hall = vso.sensors.get("hallEffect_sensor")
-    if hall is not None and adc is not None:
-        hall.configure()
-        adc._channels["hall_drv5056_ain3"] = ChannelConfig(
-            name="hall_drv5056_ain3",
-            ain_pos_code=adc._ADS_P_AIN3,
-            postprocess=None,
-            units="mV",
-        )
-
-    # Ankle encoder calibration
-    calib_offset = 0.0
-    ankle_sensor = vso.sensors.get("ankle_encoder")
-    if ankle_sensor is not None:
-        LOGGER.info("Capturing unloaded equilibrium angle. Waiting for ankle encoder warmup.")
-        time.sleep(2)
-        ankle_sensor.update()
-        calib_offset = SIDE * np.rad2deg(ankle_sensor.position)
-        LOGGER.info(f"Ankle encoder offset calibrated. calib_offset={calib_offset:.4f} deg")
-    else:
-        LOGGER.warning("No ankle encoder found. Angle will not be captured.")
-
-    encoder_counter = vso.sensors.get("encoder_counter")
-    if encoder_counter is not None:
-        encoder_counter.clear_counter()
-        data_logger.track_function(lambda: encoder_counter.encoder_count, name="encoderCounter_count")
-
-    # Tracked values
-    angle = 0.0
-
-    if ankle_sensor is not None:
-        data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
-    if adc is not None:
-        data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
-
-    readout_interval = FREQUENCY // READ_FREQUENCY
-
     with vso:
+        # setup
+        adc = vso.sensors.get("adc")
+        if adc is not None:
+            adc.start()
+            adc.adc_configure_common(single_shot=True, filter_low_latency=True)
+
+        hall = vso.sensors.get("hallEffect_sensor")
+        if hall is not None and adc is not None:
+            hall.configure()
+            adc._channels["hall_drv5056_ain3"] = ChannelConfig(
+                name="hall_drv5056_ain3",
+                ain_pos_code=adc._ADS_P_AIN3,
+                postprocess=None,
+                units="mV",
+            )
+
+        # Ankle encoder calibration
+        calib_offset = 0.0
+        ankle_sensor = vso.sensors.get("ankle_encoder")
+        if ankle_sensor is not None:
+            LOGGER.info("Capturing unloaded equilibrium angle. Waiting for ankle encoder warmup.")
+            time.sleep(2)
+            ankle_sensor.update()
+            calib_offset = SIDE * np.rad2deg(ankle_sensor.position)
+            LOGGER.info(f"Ankle encoder offset calibrated. calib_offset={calib_offset:.4f} deg")
+        else:
+            LOGGER.warning("No ankle encoder found. Angle will not be captured.")
+
+        encoder_counter = vso.sensors.get("encoder_counter")
+        if encoder_counter is not None:
+            encoder_counter.clear_counter()
+            data_logger.track_function(lambda: encoder_counter.encoder_count, name="encoderCounter_count")
+
+        # Tracked values
+        angle = 0.0
+
+        if ankle_sensor is not None:
+            data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
+        if adc is not None:
+            data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
+
+        readout_interval = FREQUENCY // READ_FREQUENCY
+
         loop = SoftRealtimeLoop(dt=1 / FREQUENCY)
         t_start = time.monotonic()
 
