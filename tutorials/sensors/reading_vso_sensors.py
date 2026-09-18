@@ -113,16 +113,15 @@ def read_sensors(data_logger: Logger) -> None:
     encoder_counter = vso.sensors.get("encoder_counter")
     if encoder_counter is not None:
         encoder_counter.clear_counter()
+        data_logger.track_function(lambda: encoder_counter.encoder_count, name="encoderCounter_count")
 
     # Tracked values
     angle = 0.0
 
-    # if ankle_sensor is not None:
-    #     data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
+    if ankle_sensor is not None:
+        data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
     if adc is not None:
         data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
-    if encoder_counter is not None:
-        data_logger.track_function(lambda: encoder_counter.encoder_count, name="encoderCounter_count")
 
     readout_interval = FREQUENCY // READ_FREQUENCY
 
