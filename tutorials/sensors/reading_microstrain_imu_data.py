@@ -13,8 +13,8 @@ if __name__ == "__main__":
     clock = SoftRealtimeLoop(dt=DT)
     imu = LordMicrostrainIMU(
         tag="LordMicrostrainIMU",
-        port=r"/dev/ttyS0",
-        baud_rate=921600,
+        port=r"/dev/ttyAMA0",
+        baud_rate=115200,
         frequency=FREQUENCY,
         update_timeout=500,
         max_packets=1,

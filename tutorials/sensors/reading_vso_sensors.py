@@ -18,29 +18,22 @@ READ_FREQUENCY = 10  # console readout rate (Hz)
 OFFLINE = False
 SIDE = -1  # 1: left-leg lateral encoder (-1 if medial); -1: right-leg lateral (1 if medial)
 ENCODER_ALPHA = 0.15  # EMA smoothing factor (~5 Hz cutoff at 200 Hz)
+V_AINCOM = 1.65  # measured AINCOM-to-GND bias, volts
 
 
-def _hall_voltage(adc: ADS114S0x, channel_index: int = 0) -> float:
-    """Return an ADC channel reading in volts, or 0.0 if unavailable.
-
-    Args:
-        adc: The ADS114S0x instance whose latest data to read.
-        channel_index: Index into adc.data for this Hall channel. Defaults to 0.
-
-    Returns:
-        float: Hall channel voltage in volts (adc.data is in millivolts).
-    """
+def _hall_mv(adc: ADS114S0x, channel_index: int = 0) -> float:
+    """Sensor output in mV (AIN5 reading with the AINCOM offset added back)."""
     data = adc.data
     if not data or channel_index >= len(data):
         return 0.0
-    return data[channel_index] / 1000.0
+    return data[channel_index] + V_AINCOM * 1000.0
 
 
 def initialize_sensors() -> dict:
-    need_adc = False
-    need_hall = False
-    need_ankleEncoder = True
-    need_encoderCounter = True
+    need_adc = True
+    need_hall = True
+    need_ankleEncoder = False
+    need_encoderCounter = False
 
     # Guard: Hall requires ADC
     if need_hall and not need_adc:
@@ -51,7 +44,7 @@ def initialize_sensors() -> dict:
 
     if need_adc:
         sensors["adc"] = ADS114S0x(
-            offline=OFFLINE, tag="adc", spi_bus=1, data_rate=2000, drdy=16, voltage_reference=1.65
+            offline=OFFLINE, tag="adc", spi_bus=1, spi_cs=1, data_rate=2000, drdy=16, voltage_reference=1.65
         )
     if need_hall:
         sensors["hallEffect_sensor"] = DRV5056(
@@ -61,7 +54,7 @@ def initialize_sensors() -> dict:
         sensors["ankle_encoder"] = AS5048B(
             offline=OFFLINE,
             tag="joint_encoder_ankle",
-            bus="/dev/i2c-3",
+            bus="/dev/i2c-1",
             A1_adr_pin=False,
             A2_adr_pin=True,
             zero_position=0,
@@ -87,16 +80,16 @@ def read_sensors(data_logger: Logger) -> None:
         # setup
         adc = vso.sensors.get("adc")
         if adc is not None:
-            adc.start()
             adc.adc_configure_common(single_shot=True, filter_low_latency=True)
 
         hall = vso.sensors.get("hallEffect_sensor")
         if hall is not None and adc is not None:
             hall.configure()
-            adc._channels["hall_drv5056_ain3"] = ChannelConfig(
-                name="hall_drv5056_ain3",
-                ain_pos_code=adc._ADS_P_AIN3,
-                postprocess=None,
+            adc._channels["hall_drv5056_ain5"] = ChannelConfig(
+                name="hall_drv5056_ain5",
+                ain_pos_code=adc._ADS_P_AIN5,
+                ain_neg_code=adc._ADS_N_AINCOM,
+                postprocess=None,  # keep raw mV; conversion done when logging
                 units="mV",
             )
 
@@ -123,7 +116,7 @@ def read_sensors(data_logger: Logger) -> None:
         if ankle_sensor is not None:
             data_logger.track_function(lambda: angle, name="ankleEncoderPos_deg")
         if adc is not None:
-            data_logger.track_function(lambda: _hall_voltage(adc, channel_index=0), name="hallEffect_V")
+            data_logger.track_function(lambda: _hall_mv(adc, 0), name="hallEffect_mV")
 
         readout_interval = FREQUENCY // READ_FREQUENCY
 
@@ -142,11 +135,11 @@ def read_sensors(data_logger: Logger) -> None:
 
             if loop_count % readout_interval == 0:
                 elapsed = time.monotonic() - t_start
-                hall_v = _hall_voltage(adc, channel_index=0) if adc is not None else 0.0
+                hall_mv = _hall_mv(adc, 0) if (adc is not None and adc.data) else 0.0
                 print(
                     f"\r  t={elapsed:6.1f}s"
                     + (f"  angle={angle:+7.2f}°" if ankle_sensor is not None else "")
-                    + (f"  hall={hall_v:+.4f} V" if adc is not None else ""),
+                    + (f"  hall={hall_mv:+8.2f} mV" if adc is not None else ""),
                     end="",
                     flush=True,
                 )
