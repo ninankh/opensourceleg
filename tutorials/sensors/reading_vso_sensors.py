@@ -85,9 +85,9 @@ def read_sensors(data_logger: Logger) -> None:
         hall = vso.sensors.get("hallEffect_sensor")
         if hall is not None and adc is not None:
             hall.configure()
-            adc._channels["hall_drv5056_ain5"] = ChannelConfig(
-                name="hall_drv5056_ain5",
-                ain_pos_code=adc._ADS_P_AIN5,
+            adc._channels["hall_drv5056_ain6"] = ChannelConfig(
+                name="hall_drv5056_ain6",
+                ain_pos_code=adc._ADS_P_AIN6,
                 ain_neg_code=adc._ADS_N_AINCOM,
                 postprocess=None,  # keep raw mV; conversion done when logging
                 units="mV",
@@ -135,11 +135,12 @@ def read_sensors(data_logger: Logger) -> None:
 
             if loop_count % readout_interval == 0:
                 elapsed = time.monotonic() - t_start
+                raw_mv = adc.data[0] if (adc is not None and adc.data) else 0.0
                 hall_mv = _hall_mv(adc, 0) if (adc is not None and adc.data) else 0.0
                 print(
                     f"\r  t={elapsed:6.1f}s"
                     + (f"  angle={angle:+7.2f}°" if ankle_sensor is not None else "")
-                    + (f"  hall={hall_mv:+8.2f} mV" if adc is not None else ""),
+                    + (f"  raw={raw_mv:+8.2f} mV  hall={hall_mv:+8.2f} mV" if adc is not None else ""),
                     end="",
                     flush=True,
                 )

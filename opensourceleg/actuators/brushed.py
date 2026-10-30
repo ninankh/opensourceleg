@@ -107,7 +107,7 @@ class MaxonActuator(PositionControlActuatorBase):
         gear_ratio: float = 6.6,
         frequency: int = 6000,
         offline: bool = False,
-        pwm_maximum_command: float = 0.3,
+        pwm_maximum_command: float = 0.85,
         pwm_minimum_command: float = 0.07,
         pwm_lower_limit: float = 0.02,
         tag: str = "maxon_actuator",
@@ -523,13 +523,10 @@ class MaxonActuator(PositionControlActuatorBase):
     def set_motor_pwm(self, pwm: float) -> None:
         """Set the motor pwm rate."""
         if pwm > self.pwm_maximum_command:
-            LOGGER.info("PWM command above maximum. Setting to maximum.")
             pwm = self.pwm_maximum_command
         elif pwm < self.pwm_minimum_command and pwm >= self.pwm_lower_limit:
-            LOGGER.info("PWM command below minimum. Setting to minimum.")
             pwm = self.pwm_minimum_command
         elif pwm < self.pwm_lower_limit:
-            LOGGER.info("PWM command below lower limit. Setting to zero.")
             pwm = 0.0
 
         self.speed_control.value = pwm
