@@ -18,9 +18,9 @@ DT = 1 / FREQUENCY
 OFFLINE = True
 PREDICT_EVERY = 50  # loops between predictions; samples are still collected every loop
 CALIBRATION_CYCLES = 1000  # 5 s at 200 Hz
-ML_TESTING = True  # If True, ML model is loaded and run on the Pi; if False, ML model is not called.
+ML_TESTING = False  # True  # If True, ML model is loaded and run on the Pi; if False, ML model is not called.
 SIDE = -1  # 1: left-leg lateral encoder (-1 if medial); -1: right-leg lateral (1 if medial)
-ENCODER_ALPHA = 0.15  # EMA smoothing factor (~5 Hz cutoff at 200 Hz)
+ENCODER_ALPHA = 1  # EMA smoothing factor (~5 Hz cutoff at 200 Hz)
 # All three models share the same ONNX signature: window (batch, 5, 1200) -> logits (batch, 5)
 MODEL = "conv2d"  # "tcn" | "linear" | "conv2d"
 MODEL_DIR = Path(__file__).resolve().parent / "trained_Models"
@@ -56,23 +56,23 @@ def calibrate_imu(vso: VSO) -> tuple[float, float, float, float]:
     foot_imu = vso.sensors["foot_imu"]
     shank_imu = vso.sensors["shank_imu"]
 
-    foot_pitch_offset_acc = 0.0
-    shank_pitch_offset_acc = 0.0
-    foot_roll_offset_acc = 0.0
-    shank_roll_offset_acc = 0.0
+    foot_pitch_offset_acc = []
+    shank_pitch_offset_acc = []
+    foot_roll_offset_acc = []
+    shank_roll_offset_acc = []
 
     LOGGER.info(f"Calibrating IMUs over {CALIBRATION_CYCLES} cycles. Hold still...")
     for _ in range(CALIBRATION_CYCLES):
         vso.update()
-        foot_pitch_offset_acc += foot_imu.pitch
-        shank_pitch_offset_acc += shank_imu.pitch
-        foot_roll_offset_acc += foot_imu.roll
-        shank_roll_offset_acc += shank_imu.roll
+        foot_pitch_offset_acc.append(foot_imu.pitch)
+        shank_pitch_offset_acc.append(shank_imu.pitch)
+        foot_roll_offset_acc.append(foot_imu.roll)
+        shank_roll_offset_acc.append(shank_imu.roll)
 
-    foot_pitch_offset = foot_pitch_offset_acc / CALIBRATION_CYCLES
-    shank_pitch_offset = shank_pitch_offset_acc / CALIBRATION_CYCLES
-    foot_roll_offset = foot_roll_offset_acc / CALIBRATION_CYCLES
-    shank_roll_offset = shank_roll_offset_acc / CALIBRATION_CYCLES
+    foot_pitch_offset = np.mean(foot_pitch_offset_acc)
+    shank_pitch_offset = np.mean(shank_pitch_offset_acc)
+    foot_roll_offset = np.mean(foot_roll_offset_acc)
+    shank_roll_offset = np.mean(shank_roll_offset_acc)
 
     LOGGER.info(
         f"Calibration done. foot_pitch={foot_pitch_offset:.4f} shank_pitch={shank_pitch_offset:.4f} "
@@ -144,7 +144,7 @@ def predict_activity(session: ort.InferenceSession, window: np.ndarray, predicti
 def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict, angle: float) -> None:
     """Register all CSV columns with the data logger. Call once, before the first datalog.update()."""
     start_time = time.time()
-
+    ACTIVITY = "LEVEL"
     axes = [
         (lambda: time.time() - start_time, "Time (s)"),
         (lambda: features[3], "Stiffness (Nm/rad)"),
@@ -153,7 +153,8 @@ def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict, angle:
         (lambda: features[2], "Shank Sagittal Angle (deg)"),
         (lambda: features[4], "Accel Y Foot (m/s^2)"),
         (lambda: angle, "Ankle Angle Encoder (rad)"),
-        (lambda: prediction["activity"], "Activity Label"),
+        # (lambda: prediction["activity"], "Activity Label"),
+        (lambda: ACTIVITY, "Activity Label"),
     ]
 
     funcs, labels = zip(*axes)
@@ -246,10 +247,10 @@ if __name__ == "__main__":
 
             datalog.update()
 
-            # Oldest sample is dropped, newest goes in the last column.
-            window[:, :-1] = window[:, 1:]
-            window[:, -1] = features
-            samples_collected += 1
+            # # Oldest sample is dropped, newest goes in the last column.
+            # window[:, :-1] = window[:, 1:]
+            # window[:, -1] = features
+            # samples_collected += 1
 
-            if ML_TESTING and samples_collected >= WINDOW_SIZE and samples_collected % PREDICT_EVERY == 0:
-                predict_activity(session, window, prediction)
+            # if ML_TESTING and samples_collected >= WINDOW_SIZE and samples_collected % PREDICT_EVERY == 0:
+            #     predict_activity(session, window, prediction)
