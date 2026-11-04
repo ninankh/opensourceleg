@@ -4,27 +4,25 @@ from pathlib import Path
 import numpy as np
 import onnxruntime as ort
 
-from opensourceleg.robots.vso import VSO
 from opensourceleg.actuators.brushed import MaxonActuator
 from opensourceleg.logging import LOGGER
 from opensourceleg.logging.logger import Logger
+from opensourceleg.robots.vso import VSO
 from opensourceleg.sensors.base import SensorBase
+from opensourceleg.sensors.encoder import AS5048B
 from opensourceleg.sensors.imu import LordMicrostrainIMU
 from opensourceleg.utilities.softrealtimeloop import SoftRealtimeLoop
-
-
-
 
 FREQUENCY = 200
 DT = 1 / FREQUENCY
 OFFLINE = True
-PREDICT_EVERY = 50      # loops between predictions; samples are still collected every loop
+PREDICT_EVERY = 50  # loops between predictions; samples are still collected every loop
 CALIBRATION_CYCLES = 1000  # 5 s at 200 Hz
 ML_TESTING = True  # If True, ML model is loaded and run on the Pi; if False, ML model is not called.
-
-
+SIDE = -1  # 1: left-leg lateral encoder (-1 if medial); -1: right-leg lateral (1 if medial)
+ENCODER_ALPHA = 0.15  # EMA smoothing factor (~5 Hz cutoff at 200 Hz)
 # All three models share the same ONNX signature: window (batch, 5, 1200) -> logits (batch, 5)
-MODEL = "conv2d"          # "tcn" | "linear" | "conv2d"
+MODEL = "conv2d"  # "tcn" | "linear" | "conv2d"
 MODEL_DIR = Path(__file__).resolve().parent / "trained_Models"
 MODEL_PATHS = {
     "tcn": MODEL_DIR / "VSO_tcn.onnx",
@@ -37,8 +35,20 @@ STIFFNESS_NM_PER_RAD = 0.0  # TODO: set to the orthosis's real stiffness. 0 is o
 ACTIVITY_LIST = ["FLAT", "INCLINE", "DECLINE", "STAIR ASCENT", "STAIR DESCENT"]
 
 # Training feature order: ankle (deg), foot sagittal (deg), shank sagittal (deg), stiffness (Nm/rad), foot accel Y.
-FEATURE_MIN = np.array([-30.0, -45.0, -60.0, 44.839, -4.0])
-FEATURE_MAX = np.array([30.0, 45.0, 60.0, 246.531, 4.0])
+FEATURE_MIN = np.array([
+    -30.0,
+    -45.0,
+    -60.0,
+    44.839,
+    -4.0,
+])  # The last element is the ankle encoder angle, which is not used for ML prediction.
+FEATURE_MAX = np.array([
+    30.0,
+    45.0,
+    60.0,
+    246.531,
+    4.0,
+])  # The last element is the ankle encoder angle, which is not used for ML prediction.
 
 
 def calibrate_imu(vso: VSO) -> tuple[float, float, float, float]:
@@ -127,13 +137,11 @@ def predict_activity(session: ort.InferenceSession, window: np.ndarray, predicti
     now = time.perf_counter()
     if changed or now - prediction["last_print"] >= 1.0:
         prediction["last_print"] = now
-        others = ", ".join(
-            f"{ACTIVITY_LIST[i]}:{probabilities[i]:.3f}" for i in range(len(ACTIVITY_LIST)) if i != best
-        )
+        others = ", ".join(f"{ACTIVITY_LIST[i]}:{probabilities[i]:.3f}" for i in range(len(ACTIVITY_LIST)) if i != best)
         LOGGER.info(f"Predicted:{ACTIVITY_LIST[best]}, probability:{probabilities[best]:.3f}, others: {others}")
 
 
-def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict) -> None:
+def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict, angle: float) -> None:
     """Register all CSV columns with the data logger. Call once, before the first datalog.update()."""
     start_time = time.time()
 
@@ -144,6 +152,7 @@ def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict) -> Non
         (lambda: features[1], "Foot Sagittal Angle (deg)"),
         (lambda: features[2], "Shank Sagittal Angle (deg)"),
         (lambda: features[4], "Accel Y Foot (m/s^2)"),
+        (lambda: angle, "Ankle Angle Encoder (rad)"),
         (lambda: prediction["activity"], "Activity Label"),
     ]
 
@@ -151,7 +160,7 @@ def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict) -> Non
     datalog.track_function(list(funcs), list(labels))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     datalog = Logger(
         log_path="./logs",
         file_name="ML_logger.log",
@@ -161,13 +170,12 @@ if __name__ == '__main__':
 
     vso = VSO[MaxonActuator, SensorBase](
         tag="variableStiffessOrthosis",
-        actuators={
-        },
+        actuators={},
         sensors={
             "foot_imu": LordMicrostrainIMU(
                 tag="foot_imu",
-                port="/dev/ttyAMA2",#uart2
-                baud_rate=921600, 
+                port="/dev/ttyAMA2",  # uart2
+                baud_rate=921600,
                 frequency=FREQUENCY,
                 update_timeout=500,
                 max_packets=1,
@@ -176,24 +184,33 @@ if __name__ == '__main__':
             ),
             "shank_imu": LordMicrostrainIMU(
                 tag="shank_imu",
-                port="/dev/ttyAMA0",#uart0
-                baud_rate=921600,  
+                port="/dev/ttyAMA0",  # uart0
+                baud_rate=921600,
                 frequency=FREQUENCY,
                 update_timeout=500,
                 max_packets=1,
                 return_packets=False,
                 offline=OFFLINE,
             ),
+            "ankle_encoder": AS5048B(
+                offline=OFFLINE,
+                tag="joint_encoder_ankle",
+                bus="/dev/i2c-1",
+                A1_adr_pin=False,
+                A2_adr_pin=True,
+                zero_position=0,
+                enable_diagnostics=False,
+            ),
         },
     )
 
- 
     LOGGER.info("Finished setting up VSO...")
 
-    
     session = load_model(MODEL_PATHS[MODEL]) if ML_TESTING else None
     if not FEATURE_MIN[3] <= STIFFNESS_NM_PER_RAD <= FEATURE_MAX[3]:
-        LOGGER.warning(f"STIFFNESS_NM_PER_RAD={STIFFNESS_NM_PER_RAD} is outside the trained range; predictions will be unreliable.")
+        LOGGER.warning(
+            f"STIFFNESS_NM_PER_RAD={STIFFNESS_NM_PER_RAD} is outside the trained range; predictions will be unreliable."
+        )
     datalog.info("Starting VSO initialization sequence...")
 
     features = np.zeros(len(FEATURE_MIN))
@@ -201,16 +218,32 @@ if __name__ == '__main__':
     prediction = {"activity": 0, "confidence": 0.0, "last_print": 0.0}
     samples_collected = 0
 
+    angle = 0.0
     with vso, datalog:
+        ankle_sensor = vso.sensors.get("ankle_encoder")
+
+        if ankle_sensor is not None:
+            LOGGER.info("Capturing unloaded equilibrium angle. Waiting for ankle encoder warmup.")
+            time.sleep(2)
+            ankle_sensor.update()
+            calib_offset = SIDE * np.rad2deg(ankle_sensor.position)
+            LOGGER.info(f"Ankle encoder offset calibrated. calib_offset={calib_offset:.4f} deg")
+        else:
+            LOGGER.warning("No ankle encoder found. Angle will not be captured.")
+
         LOGGER.info("calibrating imu offset, press enter to continue...")
         input()
         foot_pitch_offset, shank_pitch_offset, foot_roll_offset, shank_roll_offset = calibrate_imu(vso)
-        setup_logger(datalog, features, prediction)
+        setup_logger(datalog, features, prediction, angle)
         LOGGER.info(f"Collecting {WINDOW_SIZE} samples before the first prediction...")
 
         for _t in SoftRealtimeLoop(dt=DT):
             vso.update()
             features[:] = read_features(vso, foot_pitch_offset, shank_pitch_offset, foot_roll_offset, shank_roll_offset)
+
+            angle_raw = SIDE * np.rad2deg(ankle_sensor.position) - calib_offset
+            angle = ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
+
             datalog.update()
 
             # Oldest sample is dropped, newest goes in the last column.

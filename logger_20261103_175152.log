@@ -1,0 +1,22 @@
+[2026-11-03 17:51:52,660] WARNING: Failed to import mscl. Please install the MSCL library from Lord Microstrain and append the path to the PYTHONPATH or sys.path. Checkout https://github.com/LORD-MicroStrain/MSCL/tree/master and https://lord-microstrain.github.io/MSCL/Documentation/MSCL%20API%20Documentation/index.htmlIf you are using a newer version of MSCL, you may need to add /usr/lib/python3.version/dist-packages                 to PYTHONPATH
+[2026-11-03 17:51:52,660] DEBUG: [a] Patched start() for offline mode
+[2026-11-03 17:51:52,660] DEBUG: [a] Patched stop() for offline mode
+[2026-11-03 17:51:52,660] DEBUG: [a] Patched update() for offline mode
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for data
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for is_streaming
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for acc_x
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for acc_y
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for acc_z
+[2026-11-03 17:51:52,660] DEBUG: [a] Prepared offline property for gyro_x
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for gyro_y
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for gyro_z
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for roll
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for pitch
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for yaw
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for vel_x
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for vel_y
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for vel_z
+[2026-11-03 17:51:52,661] DEBUG: [a] Prepared offline property for timestamp
+[2026-11-03 17:51:52,661] INFO: [a] Offline mode enabled - hardware methods and properties patched
+[2026-11-03 17:51:52,661] DEBUG: [a] start() called in offline mode - no action taken
+[2026-11-03 17:51:52,661] DEBUG: [a] update() called in offline mode - no action taken

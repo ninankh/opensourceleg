@@ -1,0 +1,416 @@
+[2026-07-17 14:12:09,054] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,058] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,106] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,108] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,110] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,112] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,113] DEBUG: [test_actuator] Already in IDLE control mode.
+[2026-07-17 14:12:09,117] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,121] DEBUG: [test_actuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,127] DEBUG: [test_actuator_offline] Patched start() for offline mode
+[2026-07-17 14:12:09,127] DEBUG: [test_actuator_offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,127] DEBUG: [test_actuator_offline] Patched update() for offline mode
+[2026-07-17 14:12:09,127] DEBUG: [test_actuator_offline] Patched home() for offline mode
+[2026-07-17 14:12:09,127] DEBUG: [test_actuator_offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,128] DEBUG: [test_actuator_offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,129] DEBUG: [test_actuator_offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,130] DEBUG: [test_actuator_offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,130] DEBUG: [test_actuator_offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,130] DEBUG: [test_actuator_offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,131] DEBUG: [test_actuator_offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,131] DEBUG: [test_actuator_offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,131] INFO: [test_actuator_offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,132] DEBUG: [test_actuator_offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched start() for offline mode
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched update() for offline mode
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched home() for offline mode
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,135] DEBUG: [test_actuator_offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,136] DEBUG: [test_actuator_offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,137] DEBUG: [test_actuator_offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,138] DEBUG: [test_actuator_offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,138] INFO: [test_actuator_offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,138] DEBUG: [test_actuator_offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,139] DEBUG: [test_actuator_offline] start() called in offline mode - no action taken
+[2026-07-17 14:12:09,139] DEBUG: [test_actuator_offline] stop() called in offline mode - no action taken
+[2026-07-17 14:12:09,139] DEBUG: [test_actuator_offline] update() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] home() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] set_motor_voltage() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] set_motor_current() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] set_motor_position() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] set_motor_torque() called in offline mode - no action taken
+[2026-07-17 14:12:09,140] DEBUG: [test_actuator_offline] set_output_torque() called in offline mode - no action taken
+[2026-07-17 14:12:09,141] DEBUG: [test_actuator_offline] set_current_gains() called in offline mode - no action taken
+[2026-07-17 14:12:09,141] DEBUG: [test_actuator_offline] set_position_gains() called in offline mode - no action taken
+[2026-07-17 14:12:09,144] DEBUG: [test_actuator_offline] Patched start() for offline mode
+[2026-07-17 14:12:09,144] DEBUG: [test_actuator_offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,144] DEBUG: [test_actuator_offline] Patched update() for offline mode
+[2026-07-17 14:12:09,144] DEBUG: [test_actuator_offline] Patched home() for offline mode
+[2026-07-17 14:12:09,145] DEBUG: [test_actuator_offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,145] DEBUG: [test_actuator_offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,145] DEBUG: [test_actuator_offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,145] DEBUG: [test_actuator_offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,146] DEBUG: [test_actuator_offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,147] DEBUG: [test_actuator_offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,147] DEBUG: [test_actuator_offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,147] DEBUG: [test_actuator_offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,147] DEBUG: [test_actuator_offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,147] DEBUG: [test_actuator_offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,148] DEBUG: [test_actuator_offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,148] DEBUG: [test_actuator_offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,148] DEBUG: [test_actuator_offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,148] DEBUG: [test_actuator_offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,149] INFO: [test_actuator_offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,149] DEBUG: [test_actuator_offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,152] DEBUG: [test_actuator_offline] Patched start() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched update() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched home() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,153] DEBUG: [test_actuator_offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,154] DEBUG: [test_actuator_offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,155] DEBUG: [test_actuator_offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,156] DEBUG: [test_actuator_offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,156] DEBUG: [test_actuator_offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,156] INFO: [test_actuator_offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,156] DEBUG: [test_actuator_offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,163] DEBUG: [online] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-17 14:12:09,163] DEBUG: [offline] Patched start() for offline mode
+[2026-07-17 14:12:09,164] DEBUG: [offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,164] DEBUG: [offline] Patched update() for offline mode
+[2026-07-17 14:12:09,164] DEBUG: [offline] Patched home() for offline mode
+[2026-07-17 14:12:09,164] DEBUG: [offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,165] DEBUG: [offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,165] DEBUG: [offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,165] DEBUG: [offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,165] DEBUG: [offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,165] DEBUG: [offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,166] DEBUG: [offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,166] DEBUG: [offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,166] DEBUG: [offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,166] DEBUG: [offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,166] DEBUG: [offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,167] DEBUG: [offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,167] DEBUG: [offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,167] DEBUG: [offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,167] DEBUG: [offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,167] DEBUG: [offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,168] DEBUG: [offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,168] DEBUG: [offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,168] DEBUG: [offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,168] INFO: [offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,169] DEBUG: [offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched start() for offline mode
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched stop() for offline mode
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched update() for offline mode
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched home() for offline mode
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,171] DEBUG: [test_actuator_offline] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,172] DEBUG: [test_actuator_offline] Prepared offline property for motor_position
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for motor_current
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,173] DEBUG: [test_actuator_offline] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,173] INFO: [test_actuator_offline] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,174] DEBUG: [test_actuator_offline] set_impedance_gains() is not implemented in OfflineMockActuator.
+[2026-07-17 14:12:09,175] DEBUG: [test_actuator_offline] start() called in offline mode - no action taken
+[2026-07-17 14:12:09,176] DEBUG: [test_actuator_offline] set_motor_voltage() called in offline mode - no action taken
+[2026-07-17 14:12:09,176] DEBUG: [test_actuator_offline] update() called in offline mode - no action taken
+[2026-07-17 14:12:09,176] DEBUG: [test_actuator_offline] stop() called in offline mode - no action taken
+[2026-07-17 14:12:09,182] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,182] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,187] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,187] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,191] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,191] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,194] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,194] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,197] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,197] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,199] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,200] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,203] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,204] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,207] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,207] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,210] DEBUG: [test_position_actuator] set_output_impedance() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,210] DEBUG: [test_position_actuator] set_impedance_gains() is not implemented in MockPositionActuator.
+[2026-07-17 14:12:09,232] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,238] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,243] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,248] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,255] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,257] DEBUG: [maxon_actuator]  Entering Position control mode.
+[2026-07-17 14:12:09,262] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,267] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,274] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,275] DEBUG: [maxon_actuator]  Entering Position control mode.
+[2026-07-17 14:12:09,282] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,287] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,289] INFO: PWM command above maximum. Setting to maximum.
+[2026-07-17 14:12:09,297] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,300] INFO: PWM command below minimum. Setting to minimum.
+[2026-07-17 14:12:09,306] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,308] INFO: PWM command below lower limit. Setting to zero.
+[2026-07-17 14:12:09,314] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,324] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,332] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,339] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,340] INFO: Configuring position control.
+[2026-07-17 14:12:09,347] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,348] INFO: Configuring position control.
+[2026-07-17 14:12:09,353] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,355] INFO: Configuring position control.
+[2026-07-17 14:12:09,361] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,362] INFO: Configuring position control.
+[2026-07-17 14:12:09,370] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,372] WARNING: Motor velocity reading is not available.
+[2026-07-17 14:12:09,372] WARNING: No temperature reading available for the motor casing.
+[2026-07-17 14:12:09,372] WARNING: No temperature reading available for the motor windings.
+[2026-07-17 14:12:09,377] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,379] DEBUG: [maxon_actuator]  Entering Position control mode.
+[2026-07-17 14:12:09,384] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,385] DEBUG: [maxon_actuator]  Entering Position control mode.
+[2026-07-17 14:12:09,390] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,392] DEBUG: [maxon_actuator]  Entering Position control mode.
+[2026-07-17 14:12:09,397] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,399] INFO: Configuring position control.
+[2026-07-17 14:12:09,400] INFO: Homing to zero position (0% stiffness).
+[2026-07-17 14:12:09,406] INFO: Initialized Maxon x VNH7070AY.
+[2026-07-17 14:12:09,408] INFO: Configuring position control.
+[2026-07-17 14:12:09,409] INFO: Homing to zero position (0% stiffness).
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched start() for offline mode
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched stop() for offline mode
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched update() for offline mode
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched home() for offline mode
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,416] DEBUG: [maxon_actuator] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,417] DEBUG: [maxon_actuator] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for motor_position
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for motor_current
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,418] DEBUG: [maxon_actuator] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,419] DEBUG: [maxon_actuator] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,419] INFO: [maxon_actuator] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,419] INFO: Called brushed motor initialization in offline mode.
+[2026-07-17 14:12:09,421] DEBUG: [maxon_actuator] Patched start() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched stop() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched update() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched home() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,422] DEBUG: [maxon_actuator] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,423] DEBUG: [maxon_actuator] Prepared offline property for motor_position
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for motor_current
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,424] DEBUG: [maxon_actuator] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,424] INFO: [maxon_actuator] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,425] INFO: Called brushed motor initialization in offline mode.
+[2026-07-17 14:12:09,426] DEBUG: [maxon_actuator] start() called in offline mode - no action taken
+[2026-07-17 14:12:09,426] DEBUG: [maxon_actuator] stop() called in offline mode - no action taken
+[2026-07-17 14:12:09,426] DEBUG: [maxon_actuator] update() called in offline mode - no action taken
+[2026-07-17 14:12:09,426] DEBUG: [maxon_actuator] home() called in offline mode - no action taken
+[2026-07-17 14:12:09,429] DEBUG: [DephyActuator] Patched start() for offline mode
+[2026-07-17 14:12:09,429] DEBUG: [DephyActuator] Patched stop() for offline mode
+[2026-07-17 14:12:09,429] DEBUG: [DephyActuator] Patched update() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched home() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,430] DEBUG: [DephyActuator] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,431] DEBUG: [DephyActuator] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for motor_position
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for motor_current
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,432] DEBUG: [DephyActuator] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,432] INFO: [DephyActuator] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,433] DEBUG: [DephyActuator] set_impedance_gains() is not implemented in OfflineMockDephyActuator.
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched start() for offline mode
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched stop() for offline mode
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched update() for offline mode
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched home() for offline mode
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched set_motor_voltage() for offline mode
+[2026-07-17 14:12:09,436] DEBUG: [DephyActuator] Patched set_motor_current() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_motor_position() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_motor_torque() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_output_torque() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_current_gains() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_position_gains() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched _set_impedance_gains() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_motor_impedance() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_output_impedance() for offline mode
+[2026-07-17 14:12:09,437] DEBUG: [DephyActuator] Patched set_output_position() for offline mode
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] set_motor_velocity() not found - skipping offline patch
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for motor_position
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for motor_velocity
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for motor_voltage
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for motor_current
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for motor_torque
+[2026-07-17 14:12:09,438] DEBUG: [DephyActuator] Prepared offline property for case_temperature
+[2026-07-17 14:12:09,439] DEBUG: [DephyActuator] Prepared offline property for winding_temperature
+[2026-07-17 14:12:09,439] INFO: [DephyActuator] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,439] DEBUG: [DephyActuator] set_impedance_gains() is not implemented in OfflineMockDephyActuator.
+[2026-07-17 14:12:09,443] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,444] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,444] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,444] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,444] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,444] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,445] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,450] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,450] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,451] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,451] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,451] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,451] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,452] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,456] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,457] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,457] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,457] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,457] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,457] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,457] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,458] DEBUG: [mock_device] start() called in offline mode - no action taken
+[2026-07-17 14:12:09,459] DEBUG: [mock_device] stop() called in offline mode - no action taken
+[2026-07-17 14:12:09,459] DEBUG: [mock_device] calibrate() called in offline mode - no action taken
+[2026-07-17 14:12:09,461] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,461] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,461] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,462] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,462] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,462] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,462] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,469] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,469] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,469] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,470] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,470] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,470] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,470] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,475] DEBUG: [DeviceWithoutDefaults] Prepared offline property for unknown_prop
+[2026-07-17 14:12:09,475] INFO: [OfflineDeviceWithoutDefaults] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,477] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,477] INFO: [mock_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,481] DEBUG: [MockDeviceWithConnectionState] Patched connect() for offline mode
+[2026-07-17 14:12:09,481] INFO: [MockDeviceWithConnectionState] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,486] DEBUG: [test_device] Patched start() for offline mode
+[2026-07-17 14:12:09,486] DEBUG: [test_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,486] DEBUG: [test_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,486] DEBUG: [test_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,486] DEBUG: [test_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,487] DEBUG: [test_device] Prepared offline property for status
+[2026-07-17 14:12:09,487] INFO: [test_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,489] INFO: [prop_device] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,492] INFO: [DeviceWithoutTag] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,494] DEBUG: [ComplexDevice] Patched initialize() for offline mode
+[2026-07-17 14:12:09,495] DEBUG: [ComplexDevice] Patched shutdown() for offline mode
+[2026-07-17 14:12:09,495] DEBUG: [ComplexDevice] Prepared offline property for reading
+[2026-07-17 14:12:09,495] DEBUG: [ComplexDevice] Prepared offline property for state
+[2026-07-17 14:12:09,496] INFO: [OfflineComplexDevice] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,496] DEBUG: [OfflineComplexDevice] initialize() called in offline mode - no action taken
+[2026-07-17 14:12:09,496] DEBUG: [OfflineComplexDevice] shutdown() called in offline mode - no action taken
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Patched start() for offline mode
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Patched stop() for offline mode
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Patched calibrate() for offline mode
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Prepared offline property for temperature
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Prepared offline property for voltage
+[2026-07-17 14:12:09,499] DEBUG: [mock_device] Prepared offline property for status
+[2026-07-17 14:12:09,503] INFO: [MinimalDevice] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,505] DEBUG: [DeviceWithMissingMethods] nonexistent_method() not found - skipping offline patch
+[2026-07-17 14:12:09,505] INFO: [DeviceWithMissingMethods] Offline mode enabled - hardware methods and properties patched
+[2026-07-17 14:12:09,508] INFO: [OfflineDeviceWithMissingProperties] Offline mode enabled - hardware methods and properties patched

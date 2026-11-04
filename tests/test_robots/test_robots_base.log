@@ -1,0 +1,341 @@
+[2026-09-04 00:24:47,663] DEBUG: Logger reset successfully
+[2026-09-04 00:24:47,663] DEBUG: Calling stop method of MockActuator
+[2026-09-04 00:24:47,664] DEBUG: Calling stop method of MockSensor[MockSensor]
+[2026-09-04 00:24:47,665] DEBUG: [MockActuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,666] DEBUG: [MockActuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,668] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,669] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,671] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,672] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,672] DEBUG: Calling start method of ankle
+[2026-09-04 00:24:47,673] DEBUG: Calling start method of MockSensor[MockSensor]
+[2026-09-04 00:24:47,674] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,674] DEBUG: Calling stop method of ankle
+[2026-09-04 00:24:47,675] DEBUG: Calling stop method of MockSensor[MockSensor]
+[2026-09-04 00:24:47,675] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,677] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,677] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,678] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,679] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,679] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,679] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,680] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,681] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,681] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,682] DEBUG: [different_tag] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,682] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,682] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,683] DEBUG: [left] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,684] DEBUG: [right] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,684] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,684] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,685] INFO: Starting VSO homing routine.
+[2026-09-04 00:24:47,685] INFO: VSO homing complete. Spring-support is at hard stop.
+[2026-09-04 00:24:47,686] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,688] ERROR: Ankle actuator not found. Please check for `ankle` key in the actuators dictionary.
+[2026-09-04 00:24:47,690] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,690] ERROR: Ankle joint encoder sensor not found.Please check for `joint_encoder_ankle` key in the sensors dictionary.
+[2026-09-04 00:24:47,691] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,692] WARNING: [ankle] No joint encoder found. Skipping. Encoder tags should be of the form 'joint_encoder_ankle'.
+[2026-09-04 00:24:47,693] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,695] DEBUG: [some_other_tag] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,696] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,697] WARNING: [ANKLE] Please home the ankle joint before making the encoder map.
+[2026-09-04 00:24:47,697] DEBUG: [ankle] set_impedance_gains() is not implemented in MockActuator.
+[2026-09-04 00:24:47,701] INFO: [JOINT_ENCODER_ANKLE] Encoder map exists. Skipping encoder map creation.
+[2026-09-04 00:24:47,701] INFO: [JOINT_ENCODER_ANKLE] Encoder map loaded from './joint_encoder_ankle_linearization_map.npy'.
+[2026-09-04 00:24:47,704] DEBUG: [ankle] set_impedance_gains() is not implemented in RecordingActuator.
+[2026-09-04 00:24:47,705] INFO: [ANKLE] Please manually move the ankle joint numerous times through its full range of motion for 10 seconds.
+[2026-09-04 00:24:47,706] INFO: [ANKLE] Mapping the ankle joint encoder: 9.00 seconds left.
+[2026-09-04 00:24:47,706] INFO: [ANKLE] Mapping the ankle joint encoder: 8.00 seconds left.
+[2026-09-04 00:24:47,706] INFO: [ANKLE] Mapping the ankle joint encoder: 7.00 seconds left.
+[2026-09-04 00:24:47,706] INFO: [ANKLE] Mapping the ankle joint encoder: 6.00 seconds left.
+[2026-09-04 00:24:47,706] INFO: [ANKLE] Mapping the ankle joint encoder: 5.00 seconds left.
+[2026-09-04 00:24:47,707] INFO: [ANKLE] Mapping the ankle joint encoder: 4.00 seconds left.
+[2026-09-04 00:24:47,707] INFO: [ANKLE] Mapping the ankle joint encoder: 3.00 seconds left.
+[2026-09-04 00:24:47,707] INFO: [ANKLE] Mapping the ankle joint encoder: 2.00 seconds left.
+[2026-09-04 00:24:47,707] INFO: [ANKLE] Mapping the ankle joint encoder: 1.00 seconds left.
+[2026-09-04 00:24:47,707] INFO: [ANKLE] Mapping the ankle joint encoder: 0.00 seconds left.
+[2026-09-04 00:24:47,708] INFO: [ANKLE] You may now stop moving the ankle joint.
+[2026-09-04 00:24:47,711] INFO: [JOINT_ENCODER_ANKLE] Encoder map saved to './joint_encoder_ankle_linearization_map.npy' and loaded.
+[2026-09-04 00:24:47,713] DEBUG: [ankle] set_impedance_gains() is not implemented in RecordingActuator.
+[2026-09-04 00:24:47,714] INFO: [ANKLE] Please manually move the ankle joint numerous times through its full range of motion for 10 seconds.
+[2026-09-04 00:24:47,715] INFO: [ANKLE] Mapping the ankle joint encoder: 9.00 seconds left.
+[2026-09-04 00:24:47,715] INFO: [ANKLE] Mapping the ankle joint encoder: 8.00 seconds left.
+[2026-09-04 00:24:47,715] INFO: [ANKLE] Mapping the ankle joint encoder: 7.00 seconds left.
+[2026-09-04 00:24:47,715] INFO: [ANKLE] Mapping the ankle joint encoder: 6.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 5.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 4.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 3.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 2.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 1.00 seconds left.
+[2026-09-04 00:24:47,716] INFO: [ANKLE] Mapping the ankle joint encoder: 0.00 seconds left.
+[2026-09-04 00:24:47,717] INFO: [ANKLE] You may now stop moving the ankle joint.
+[2026-09-04 00:24:47,717] INFO: [JOINT_ENCODER_ANKLE] Encoder map saved to './joint_encoder_ankle_linearization_map.npy' and loaded.
+[2026-09-04 00:24:47,805] INFO: ADC initialized with tag: ADS114S08
+[2026-09-04 00:24:47,807] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,809] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,811] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,813] ERROR: spidev is not installed. Please install it to use this module.
+[2026-09-04 00:24:47,815] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,817] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,819] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,821] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,825] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,827] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,829] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,831] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,833] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,835] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,838] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,840] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,842] INFO: ADC initialized with tag: A
+[2026-09-04 00:24:47,843] INFO: ADC initialized with tag: B
+[2026-09-04 00:24:47,845] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,847] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,850] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,852] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,855] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,857] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,860] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,863] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,866] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,869] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,872] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,874] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,876] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,878] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,881] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,884] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,889] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,893] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,897] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,900] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,901] INFO: Starting ADC...
+[2026-09-04 00:24:47,903] INFO: ADC started successfully.
+[2026-09-04 00:24:47,907] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,908] INFO: Stopping ADC...
+[2026-09-04 00:24:47,909] INFO: ADC stopped successfully.
+[2026-09-04 00:24:47,912] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,916] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,948] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,951] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,951] INFO: No channels have been configured for reading. Use ChannelConfig.
+[2026-09-04 00:24:47,953] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,956] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,958] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,960] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,963] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,966] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,970] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,974] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,977] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,980] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,983] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,986] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,990] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,994] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:47,997] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,001] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,007] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,012] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,016] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,022] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,026] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,030] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,033] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,038] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,042] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,046] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,049] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,054] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,059] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,066] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,075] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,082] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,088] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,092] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,097] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,103] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,107] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,111] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,118] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,121] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,126] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,129] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,133] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,138] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,142] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,147] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,152] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,158] INFO: ADC initialized with tag: TestADC
+[2026-09-04 00:24:48,165] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,167] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,168] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,219] INFO: IMU started successfully.
+[2026-09-04 00:24:48,221] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,272] INFO: IMU started successfully.
+[2026-09-04 00:24:48,274] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,326] INFO: IMU started successfully.
+[2026-09-04 00:24:48,327] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,327] INFO: Stopping IMU...
+[2026-09-04 00:24:48,328] INFO: IMU stopped successfully.
+[2026-09-04 00:24:48,328] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,380] INFO: IMU started successfully.
+[2026-09-04 00:24:48,380] INFO: Stopping IMU...
+[2026-09-04 00:24:48,380] INFO: IMU stopped successfully.
+[2026-09-04 00:24:48,381] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,433] INFO: IMU started successfully.
+[2026-09-04 00:24:48,485] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:48,498] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,550] INFO: IMU started successfully.
+[2026-09-04 00:24:48,602] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:48,613] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:48,615] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,666] INFO: IMU started successfully.
+[2026-09-04 00:24:48,718] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:48,731] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,782] INFO: IMU started successfully.
+[2026-09-04 00:24:48,834] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:48,847] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,899] INFO: IMU started successfully.
+[2026-09-04 00:24:48,900] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:48,952] INFO: IMU started successfully.
+[2026-09-04 00:24:48,953] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,005] INFO: IMU started successfully.
+[2026-09-04 00:24:49,006] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,058] INFO: IMU started successfully.
+[2026-09-04 00:24:49,109] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,172] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,183] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:49,184] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,236] INFO: IMU started successfully.
+[2026-09-04 00:24:49,287] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,350] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,361] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:49,363] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,414] INFO: IMU started successfully.
+[2026-09-04 00:24:49,466] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,528] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,540] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:49,542] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,593] INFO: IMU started successfully.
+[2026-09-04 00:24:49,645] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,707] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,719] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:49,720] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,772] INFO: IMU started successfully.
+[2026-09-04 00:24:49,824] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,886] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:49,898] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:49,900] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:49,951] INFO: IMU started successfully.
+[2026-09-04 00:24:50,003] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,066] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,078] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:50,079] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,131] INFO: IMU started successfully.
+[2026-09-04 00:24:50,182] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,245] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,256] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:50,258] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,309] INFO: IMU started successfully.
+[2026-09-04 00:24:50,361] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,424] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,436] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:50,437] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,488] INFO: IMU started successfully.
+[2026-09-04 00:24:50,540] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,603] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,614] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:50,616] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,617] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,618] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,618] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,670] INFO: IMU started successfully.
+[2026-09-04 00:24:50,721] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,784] WARNING: Changing sensor dynamic range not implemented. Setting IMU to default dynamic range.
+[2026-09-04 00:24:50,795] WARNING: Accelerometer signal susceptible to noise due to short-term linear noise.Recommended to use 'gravity' signal when trying to estimate global angles.
+[2026-09-04 00:24:50,797] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,848] INFO: IMU started successfully.
+[2026-09-04 00:24:50,850] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,902] INFO: IMU started successfully.
+[2026-09-04 00:24:50,903] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:50,955] INFO: IMU started successfully.
+[2026-09-04 00:24:50,956] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:51,008] INFO: IMU started successfully.
+[2026-09-04 00:24:51,009] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:51,061] INFO: IMU started successfully.
+[2026-09-04 00:24:51,062] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:51,114] INFO: IMU started successfully.
+[2026-09-04 00:24:51,115] INFO: Initializing MockBHI260AP
+[2026-09-04 00:24:51,167] INFO: IMU started successfully.
+[2026-09-04 00:24:51,169] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,169] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,172] INFO: Clearing Encoder CS1's Count...
+[2026-09-04 00:24:51,172] INFO: Clearing Encoder CS1's Status..
+[2026-09-04 00:24:51,175] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,175] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,177] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,177] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,181] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,181] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,184] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,185] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,188] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,188] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,191] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,192] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,194] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,195] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,198] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,199] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,201] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,202] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,204] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,205] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,207] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,207] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,209] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,210] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,211] INFO: Closing Encoder...
+[2026-09-04 00:24:51,213] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,213] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,214] INFO: Closing Encoder...
+[2026-09-04 00:24:51,214] INFO: Motor encoder stopped successfully.
+[2026-09-04 00:24:51,216] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,217] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,220] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,221] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,224] INFO: Clearing Encoder CS0's Count...
+[2026-09-04 00:24:51,224] INFO: Clearing Encoder CS0's Status..
+[2026-09-04 00:24:51,243] INFO: [LoadcellBase] calibration_matrix must be a 6x6 array of np.double.
+[2026-09-04 00:24:51,244] INFO: [LoadcellBase] amp_gain must be a floating point value greater than 0.
+[2026-09-04 00:24:51,244] INFO: [LoadcellBase] exc must be a floating point value greater than 0.
+[2026-09-04 00:24:51,253] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,254] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,255] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,256] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,258] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,259] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,260] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,261] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,262] ERROR: Failed to ping the IMU at /dev/ttyUSB0
+[2026-09-04 00:24:51,263] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,264] INFO: Successfully pinged the IMU at /dev/ttyUSB0
+[2026-09-04 00:24:51,264] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,265] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,266] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,268] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,269] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,271] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,272] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,273] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,274] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,275] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,278] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,279] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,280] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,281] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,282] INFO: Initializing MockLordMicrostrainIMU
+[2026-09-04 00:24:51,283] INFO: Initializing MockLordMicrostrainIMU

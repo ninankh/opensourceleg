@@ -1,0 +1,5 @@
+[2026-07-06 13:23:16,974] DEBUG: Logger reset successfully
+[2026-07-06 13:23:17,031] DEBUG: [test] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-06 13:23:17,032] DEBUG: [MockActuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-06 13:23:17,033] DEBUG: [MockActuator] set_impedance_gains() is not implemented in MockActuator.
+[2026-07-06 13:23:17,035] DEBUG: [MockActuator] set_impedance_gains() is not implemented in MockActuator.
