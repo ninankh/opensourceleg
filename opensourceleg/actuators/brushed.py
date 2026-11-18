@@ -259,11 +259,11 @@ class MaxonActuator(PositionControlActuatorBase):
         keep_going = True
 
         if home_zero:
-            LOGGER.info("Homing to zero position (0% stiffness).")
+            LOGGER.info("Homing to TRUE position")
             self.set_motor_direction_backward()
             time.sleep(0.5)  # Ensure direction is set before applying PWM
         else:
-            LOGGER.info("Homing to hard stop (100% stiffness).")
+            LOGGER.info("Homing to FALSE position")
             self.set_motor_direction_forward()
             time.sleep(0.5)  # Ensure direction is set before applying PWM
 
