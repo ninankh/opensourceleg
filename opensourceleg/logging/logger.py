@@ -387,6 +387,7 @@ class Logger(logging.Logger):
                 # Reset CSV file if it exists
                 if self._file:
                     self.close()
+                self.header_written = False
             except Exception as e:
                 self.error(f"Error setting file name: {e}")
                 raise
