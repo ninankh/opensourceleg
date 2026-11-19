@@ -31,6 +31,10 @@ MUX1_PIN = 39
 RP1_GPIOCHIP = 0
 ENABLE_HALL = True  # choose which sensors are used, logged, and printed.
 OFFLINE = False
+ENABLE_SYNC = False
+SYNC_PI_IP = "35.3.155.109"
+SYNC_PI_PORT = 5555
+SYNC_TIMEOUT_S = 0.5
 
 # ADC Measurement Calibration Factors
 BAT_0 = 9.9  # V
@@ -110,6 +114,48 @@ def _command_pwm(actuator: MaxonActuator, pwm: float) -> None:
     actuator.set_motor_pwm(np.abs(pwm))
 
 
+class SyncPi:
+    """Non-blocking ZMQ subscriber for the sync Pi (port of legacy ZmqSwitchPi)."""
+
+    def __init__(self, address: str, timeout_s: float = SYNC_TIMEOUT_S) -> None:
+        import zmq  # only needed when ENABLE_SYNC is True
+
+        self._zmq = zmq
+        self._context = zmq.Context()
+        self._socket = self._context.socket(zmq.SUB)
+        self._socket.setsockopt(zmq.LINGER, 0)
+        self._socket.setsockopt_string(zmq.SUBSCRIBE, "")
+        self._socket.connect(address)
+        self._timeout_s = timeout_s
+        self._last_msg_time = time.monotonic()
+        self._value = 0
+        self._warned = False
+
+    def update(self) -> int:
+        """Drain pending messages; return the latest value, or 0 if stale."""
+        while True:
+            try:
+                message = self._socket.recv(self._zmq.NOBLOCK)
+            except self._zmq.Again:
+                break
+            try:
+                self._value = int(message)
+            except ValueError:
+                continue
+            self._last_msg_time = time.monotonic()
+            self._warned = False
+        if time.monotonic() - self._last_msg_time > self._timeout_s:
+            if not self._warned:
+                LOGGER.warning("No signal from the sync Pi.")
+                self._warned = True
+            return 0
+        return self._value
+
+    def close(self) -> None:
+        self._socket.close()
+        self._context.term()
+        
+        
 def _log_step(
     actuator: MaxonActuator,
     data_logger: "Logger | None",
@@ -138,6 +184,7 @@ def go_to_position(  # noqa: C901
     data_logger: "Logger | None" = None,
     state: "dict | None" = None,
     t_start: float = 0.0,
+    sync: "SyncPi | None" = None,
 ) -> bool:
     """Command the motor to move the slider to `target_perc`.
 
@@ -155,7 +202,11 @@ def go_to_position(  # noqa: C901
     stall_t0 = start_time
     stall_boost = 0.0
     current_angle = float("nan")  # logged as NaN when no ankle encoder
-
+    wait_count = 0  # paused control steps, throttles the waiting readout
+    readout_interval = FREQUENCY // READ_FREQUENCY
+    resume_lo = ANKLE_PAUSE_MIN_DEG + ANKLE_HYST_DEG
+    resume_hi = ANKLE_PAUSE_MAX_DEG - ANKLE_HYST_DEG
+    target_disp = actuator.cts_to_perc(desired_cts)  # clamped target (%)
     if state is not None:
         state["n_moves"] += 1
         state["move_id"] = state["n_moves"]
@@ -167,6 +218,9 @@ def go_to_position(  # noqa: C901
     try:
         while True:
             actuator.update()
+            
+            if sync is not None and state is not None:
+                state["sync"] = sync.update()
 
             if ankle is not None:
                 ankle.update()  # only the ankle is needed here; skip ADC/Hall reads
@@ -186,6 +240,16 @@ def go_to_position(  # noqa: C901
                         was_paused = True
                     in_range_since = None
                     _log_step(actuator, data_logger, state, t_start, 0.0, current_angle)
+                    if wait_count % readout_interval == 0:
+                        print(
+                            f"\r  WAITING  target={target_disp:5.1f}%"
+                            f"  stiff={actuator.cts_to_perc(actuator.motor_position_cts):5.1f}%"
+                            f"  angle={current_angle:+7.2f}°"
+                            f"  resume band {resume_lo:+.1f}..{resume_hi:+.1f}°\033[K",
+                            end="",
+                            flush=True,
+                        )
+                    wait_count += 1
                     time.sleep(DT)
                     continue
 
@@ -194,10 +258,22 @@ def go_to_position(  # noqa: C901
                         in_range_since = time.monotonic()
                     if time.monotonic() - in_range_since < ANKLE_RESUME_S:
                         _log_step(actuator, data_logger, state, t_start, 0.0, current_angle)
+                        if wait_count % readout_interval == 0:
+                            print(
+                            f"\r  WAITING  target={target_disp:5.1f}%"
+                            f"  stiff={actuator.cts_to_perc(actuator.motor_position_cts):5.1f}%"
+                            f"  angle={current_angle:+7.2f}°"
+                            f"  resume band {resume_lo:+.1f}..{resume_hi:+.1f}°\033[K",
+                            end="",
+                            flush=True,
+                        )
+                        wait_count += 1
                         time.sleep(DT)
                         continue
 
             if was_paused:
+                print()  # end the \r waiting line so the log starts on a new line
+                wait_count = 0
                 position_logger.info("Swing detected. Resuming slider motion.")
                 was_paused = False
                 in_range_since = None
@@ -378,6 +454,8 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
     hall1 = vso.sensors.get("hallEffect_sensor1")
     hall2 = vso.sensors.get("hallEffect_sensor2")
     ankle = vso.sensors.get("ankle_encoder")
+    
+    sync = SyncPi(f"tcp://{SYNC_PI_IP}:{SYNC_PI_PORT}") if ENABLE_SYNC else None
 
     state = {
         "t": 0.0,
@@ -412,6 +490,10 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
         state["hall2"] = 0.0
         columns.append(("hallEffect_data2", "hall2"))
         console_fields.append(("hall2", "hall2", "+.4f", " V"))
+    if sync is not None:
+        state["sync"] = 0
+        columns.insert(1, ("sync_signal", "sync"))  # 2nd column, as in the legacy CSV
+        console_fields.append(("sync", "sync", "d", ""))
     for name, key in columns:
         data_logger.track_function(lambda k=key: state[k], name=name)
 
@@ -489,6 +571,9 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
                 while True:
                     vso.update()
                     actuator.update()
+                    
+                    if sync is not None:
+                        state["sync"] = sync.update()
 
                     quit_now = False
                     while not commands.empty():
@@ -544,6 +629,7 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
                                 data_logger=data_logger if recording else None,
                                 state=state,
                                 t_start=t_start,
+                                sync=sync,
                             )
                             actuator.update()
                             next_tick = time.monotonic()
@@ -578,7 +664,8 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
                         )
                         rec_txt = f"REC trial {state['trial']}" if recording else "idle"
                         line = (
-                            f"  t={state['t']:6.1f}s  stiff={state['stiff']:5.1f}%"
+                            f"  t={state['t']:6.1f}s  target={state['target']:5.1f}%"
+                            f"  stiff={state['stiff']:5.1f}%"
                             f"  batt_volts={state['battery']:5.1f}V"
                             f"  {sensor_txt}  {rec_txt}"
                         )
@@ -592,6 +679,8 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
 
     finally:
         data_logger.close()  # flush/close any open trial CSV (safe if none is open)
+        if sync is not None:
+            sync.close()
         lgpio.gpio_free(gpio_handle, MUX0_PIN)
         lgpio.gpio_free(gpio_handle, MUX1_PIN)
         lgpio.gpiochip_close(gpio_handle)
