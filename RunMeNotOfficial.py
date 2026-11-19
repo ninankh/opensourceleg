@@ -13,6 +13,8 @@ from datetime import datetime
 
 import lgpio
 import numpy as np
+import csv
+from pathlib import Path
 
 from opensourceleg.actuators.base import CONTROL_MODES
 from opensourceleg.actuators.brushed import MaxonActuator
@@ -37,10 +39,15 @@ SYNC_PI_PORT = 5555
 SYNC_TIMEOUT_S = 0.5
 
 # ADC Measurement Calibration Factors
-BAT_0 = 9.9  # V
-BAT_1 = 12.6  # V
-ADC_0 = 0.318  # V
-ADC_1 = 3.296  # V
+# Battery monitor two-point cal, in the ADC's own units (AIN0 - AINCOM).
+# Response is inverted on this board: higher battery -> lower reading.
+BAT_0 = 11.29  # V, battery (meter)
+BAT_1 = 12.30  # V, battery (meter)
+ADC_0 = 0.212  # V, ADC reading at BAT_0 (back-calculated; refine with bat_adc)
+ADC_1 = -0.781  # V, ADC reading at BAT_1
+BATTERY_LOW_V = 11.3  # V, show the low-battery banner at or below this
+BATTERY_OK_V = 11.5  # V, clear it only above this (hysteresis)
+LOW_BATT_BANNER = "\033[1;97;41m LOW BATTERY {:.1f} V \033[0m  "  # bold white on red
 VOLTAGE_REFERENCE = 1.65  # V
 
 # Timing
@@ -59,7 +66,23 @@ ZERO_SAMPLES = 100  # encoder samples averaged when zeroing
 
 # Slider Geometry
 STROKE_MM = 62.5  # slider stroke (mm)
-SCALE_PERC = 19972.65  # encoder counts per 1 % of slider travel
+SCALE_PERC_FILE = Path(__file__).with_name("scale_perc.csv") 
+SCALE_PERC_DEFAULT = 19972.65  # encoder counts per 1 % of slider travel
+def _load_scale_perc() -> float:
+    """Latest SCALE_PERC from the calibration CSV, or the default."""
+    try:
+        with open(SCALE_PERC_FILE, newline="") as f:
+            value = float(list(csv.DictReader(f))[-1]["scale_perc"])
+    except (OSError, IndexError, KeyError, ValueError):
+        print(f"No usable {SCALE_PERC_FILE.name}; using default SCALE_PERC = {SCALE_PERC_DEFAULT}.")
+        return SCALE_PERC_DEFAULT
+    if not value > 0:  # also rejects NaN
+        print(f"Bad SCALE_PERC {value} in {SCALE_PERC_FILE.name}; using default.")
+        return SCALE_PERC_DEFAULT
+    print(f"SCALE_PERC = {value:.2f} from {SCALE_PERC_FILE.name}.")
+    return value
+
+SCALE_PERC = _load_scale_perc()
 SCALE = SCALE_PERC * 100.0 / STROKE_MM  # encoder counts per mm (~31956)
 
 # Slider Controller
@@ -242,7 +265,7 @@ def go_to_position(  # noqa: C901
                     _log_step(actuator, data_logger, state, t_start, 0.0, current_angle)
                     if wait_count % readout_interval == 0:
                         print(
-                            f"\r  WAITING  target={target_disp:5.1f}%"
+                            f"\r{_battery_warning(state)}  WAITING  target={target_disp:5.1f}%"
                             f"  stiff={actuator.cts_to_perc(actuator.motor_position_cts):5.1f}%"
                             f"  angle={current_angle:+7.2f}°"
                             f"  resume band {resume_lo:+.1f}..{resume_hi:+.1f}°\033[K",
@@ -260,7 +283,7 @@ def go_to_position(  # noqa: C901
                         _log_step(actuator, data_logger, state, t_start, 0.0, current_angle)
                         if wait_count % readout_interval == 0:
                             print(
-                            f"\r  WAITING  target={target_disp:5.1f}%"
+                            f"\r{_battery_warning(state)}  WAITING  target={target_disp:5.1f}%"
                             f"  stiff={actuator.cts_to_perc(actuator.motor_position_cts):5.1f}%"
                             f"  angle={current_angle:+7.2f}°"
                             f"  resume band {resume_lo:+.1f}..{resume_hi:+.1f}°\033[K",
@@ -336,10 +359,15 @@ def _adc_voltage(adc: ADS114S0x, channel_name: str) -> float:
 
 
 def _battery_voltage(adc_v: float) -> float:
-    """Map the monitor-channel voltage to battery voltage (two-point linear cal)."""
+    """Map the monitor-channel reading to battery voltage (two-point linear cal)."""
     return BAT_0 + (adc_v - ADC_0) * (BAT_1 - BAT_0) / (ADC_1 - ADC_0)
 
-
+def _battery_warning(state: "dict | None") -> str:
+    """Red banner text if the battery is low, else an empty string."""
+    if not state or not state.get("batt_low", False):
+        return ""
+    return LOW_BATT_BANNER.format(state["batt_last"])
+    
 def _wrap_deg(angle: float) -> float:
     """Wrap an angle to [-180, 180) deg."""
     return (angle + 180.0) % 360.0 - 180.0
@@ -466,6 +494,8 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
         "stiff": 0.0,
         "pwm": 0.0,  # signed applied motor duty
         "battery": 0.0,
+        "batt_low": False,  # low-battery latch, console only (not logged)
+        "batt_last": float("nan"),  # last valid battery reading (V)
     }
     columns = [
         ("time_s", "t"),
@@ -651,6 +681,15 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
                     if hall2 is not None:
                         state["hall2"] = _adc_voltage(adc, "hall_drv5056_ain5")
                     state["battery"] = _battery_voltage(_adc_voltage(adc, "battery_voltage_monitor"))
+                    batt = state["battery"]
+                    if np.isfinite(batt):
+                        state["batt_last"] = batt
+                        if batt <= BATTERY_LOW_V and not state["batt_low"]:
+                            state["batt_low"] = True
+                            print()  # end the \r line so the warning gets its own line
+                            LOGGER.warning(f"LOW BATTERY: {batt:.1f} V (<= {BATTERY_LOW_V} V). Charge or swap soon.")
+                        elif batt >= BATTERY_OK_V:
+                            state["batt_low"] = False
                     state["t"] = time.monotonic() - t_start
                     state["stiff"] = actuator.cts_to_perc(actuator.motor_position_cts)
 
@@ -669,7 +708,7 @@ def run(data_logger: Logger, side: str) -> None:  # noqa: C901
                             f"  batt_volts={state['battery']:5.1f}V"
                             f"  {sensor_txt}  {rec_txt}"
                         )
-                        print(f"\r{line}\033[K", end="", flush=True)
+                        print(f"\r{_battery_warning(state)}{line}\033[K", end="", flush=True)
                     loop_count += 1
 
                     next_tick += DT
