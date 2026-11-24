@@ -15,7 +15,7 @@ from opensourceleg.utilities.softrealtimeloop import SoftRealtimeLoop
 
 FREQUENCY = 200
 DT = 1 / FREQUENCY
-OFFLINE = True
+OFFLINE = False
 PREDICT_EVERY = 50  # loops between predictions; samples are still collected every loop
 CALIBRATION_CYCLES = 1000  # 5 s at 200 Hz
 ML_TESTING = False  # True  # If True, ML model is loaded and run on the Pi; if False, ML model is not called.
@@ -32,6 +32,7 @@ MODEL_PATHS = {
 
 WINDOW_SIZE = 1200  # 6 s at 200 Hz
 STIFFNESS_NM_PER_RAD = 0.0  # TODO: set to the orthosis's real stiffness. 0 is outside the trained range.
+ACTIVITY = "LEVEL_0STIFF_08ms"
 ACTIVITY_LIST = ["FLAT", "INCLINE", "DECLINE", "STAIR ASCENT", "STAIR DESCENT"]
 
 # Training feature order: ankle (deg), foot sagittal (deg), shank sagittal (deg), stiffness (Nm/rad), foot accel Y.
@@ -152,7 +153,6 @@ def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict, angle:
         (lambda: features[1], "Foot Sagittal Angle (deg)"),
         (lambda: features[2], "Shank Sagittal Angle (deg)"),
         (lambda: features[4], "Accel Y Foot (m/s^2)"),
-        (lambda: angle, "Ankle Angle Encoder (rad)"),
         # (lambda: prediction["activity"], "Activity Label"),
         (lambda: ACTIVITY, "Activity Label"),
     ]
@@ -164,7 +164,7 @@ def setup_logger(datalog: Logger, features: np.ndarray, prediction: dict, angle:
 if __name__ == "__main__":
     datalog = Logger(
         log_path="./logs",
-        file_name="ML_logger.log",
+        file_name="ML_logger_0_stiffness_LEVEL_08ms.csv",
     )
 
     LOGGER.info("Finished initializing data logger...")
@@ -175,30 +175,30 @@ if __name__ == "__main__":
         sensors={
             "foot_imu": LordMicrostrainIMU(
                 tag="foot_imu",
-                port="/dev/ttyAMA2",  # uart2
+                port=r"/dev/ttyAMA0",
                 baud_rate=921600,
                 frequency=FREQUENCY,
                 update_timeout=500,
                 max_packets=1,
                 return_packets=False,
-                offline=OFFLINE,
+                offline=False,
             ),
             "shank_imu": LordMicrostrainIMU(
                 tag="shank_imu",
-                port="/dev/ttyAMA0",  # uart0
+                port=r"/dev/ttyAMA2",
                 baud_rate=921600,
                 frequency=FREQUENCY,
                 update_timeout=500,
                 max_packets=1,
                 return_packets=False,
-                offline=OFFLINE,
+                offline=False,
             ),
             "ankle_encoder": AS5048B(
                 offline=OFFLINE,
                 tag="joint_encoder_ankle",
                 bus="/dev/i2c-1",
                 A1_adr_pin=False,
-                A2_adr_pin=True,
+                A2_adr_pin=False,
                 zero_position=0,
                 enable_diagnostics=False,
             ),
@@ -233,19 +233,22 @@ if __name__ == "__main__":
             LOGGER.warning("No ankle encoder found. Angle will not be captured.")
 
         LOGGER.info("calibrating imu offset, press enter to continue...")
-        input()
+        # input()
         foot_pitch_offset, shank_pitch_offset, foot_roll_offset, shank_roll_offset = calibrate_imu(vso)
         setup_logger(datalog, features, prediction, angle)
         LOGGER.info(f"Collecting {WINDOW_SIZE} samples before the first prediction...")
-
-        for _t in SoftRealtimeLoop(dt=DT):
+        loop = SoftRealtimeLoop(dt=DT)
+        angle = 0.0
+        datalog.track_function(lambda: angle, "Ankle Angle Encoder (rad)")
+        for _t, _ in enumerate(loop):
             vso.update()
             features[:] = read_features(vso, foot_pitch_offset, shank_pitch_offset, foot_roll_offset, shank_roll_offset)
-
-            angle_raw = SIDE * np.rad2deg(ankle_sensor.position) - calib_offset
+            angle_raw = SIDE * np.rad2deg(vso.sensors["ankle_encoder"].position) - calib_offset
             angle = ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
+            # print(angle)
 
             datalog.update()
+            datalog.flush_buffer()
 
             # # Oldest sample is dropped, newest goes in the last column.
             # window[:, :-1] = window[:, 1:]

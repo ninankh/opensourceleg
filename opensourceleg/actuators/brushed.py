@@ -412,7 +412,7 @@ class MaxonActuator(PositionControlActuatorBase):
 
     def position_control_config(
         self,
-        scale_perc: float = 19972.65,
+        scale_perc: float = 19876.60,
         scale: float = 21281.976,
         min_pos_error: float = 0.3,
         slider_max_perc: float = 99.5,

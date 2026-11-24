@@ -14,13 +14,14 @@ if __name__ == "__main__":
     imu = LordMicrostrainIMU(
         tag="LordMicrostrainIMU",
         port=r"/dev/ttyAMA0",
-        baud_rate=115200,
+        baud_rate=921600,
         frequency=FREQUENCY,
         update_timeout=500,
         max_packets=1,
         return_packets=False,
         offline=False,
     )
+
     imu_logger.track_function(lambda: imu.roll, "Roll")
     imu_logger.track_function(lambda: imu.pitch, "Pitch")
     imu_logger.track_function(lambda: imu.yaw, "Yaw")

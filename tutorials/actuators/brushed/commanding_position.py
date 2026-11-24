@@ -10,8 +10,8 @@ from opensourceleg.sensors.encoderCounter import LS7366R
 TIME_TO_STEP = 1.0
 FREQUENCY = 200
 DT = 1 / FREQUENCY
-
-TARGET_PERC = [30.0]  # Target stiffness position in percentage. Edit here to change target position.
+HOME_MOTOR = True  # Set to True to home the motor before commanding position. Set to False to skip homing.
+TARGET_PERC = [50.0]  # Target stiffness position in percentage. Edit here to change target position.
 
 
 def _clamp_target_cts(actuator: MaxonActuator, desired_cts: int) -> int:
@@ -50,7 +50,7 @@ def go_to_position(actuator: MaxonActuator, target_perc: float, position_logger:
     while True:
         try:
             actuator.update()
-            actuator.check_coupler_drift()
+            # actuator.check_coupler_drift()
 
             # TODO: replace with a real check_ankle_position() on the orthosis.
             ankle_in_range = True
@@ -111,14 +111,14 @@ def position_control():
         actuator.set_control_mode(CONTROL_MODES.POSITION)
         actuator.position_control_init()
 
-        if not actuator._is_homed:
+        if HOME_MOTOR:
             position_logger.info("Actuator homing to 0% stiffness.")
-            actuator.home(home_zero=True)
+            actuator.home(home_zero=False, homing_pwm=0.45)
             encoder_counter.clear_counter()
             actuator._is_homed = True
 
             actuator.update()
-            actuator.check_coupler_drift()
+            # actuator.check_coupler_drift()
             position_logger.info(f"Homing complete. position = {actuator.motor_position_mm:.3f} mm)")
 
         for target_perc in TARGET_PERC:

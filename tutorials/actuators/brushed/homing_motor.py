@@ -23,15 +23,15 @@ def home_motor():
             homing_logger.info("Actuator already homed to 0% stiffness.")
         else:
             homing_logger.info("Actuator homing to 0% stiffness.")
-            actuator.home(home_zero=True)
+            actuator.home(home_zero=False, homing_pwm=0.45)
             encoder_counter.clear_counter()
             actuator._is_homed = True
-
+            actuator.home(home_zero=True, homing_pwm=0.45)
             actuator.update()
             actuator.check_coupler_drift()
             homing_logger.info(
                 f"Homing complete. position = "
-                f"{actuator.cts_to_perc(actuator.motor_position_cts):.2f}% "
+                f"{actuator.motor_position_cts:.5f} counts, "
                 f"({actuator.motor_position_mm:.3f} mm)"
             )
 

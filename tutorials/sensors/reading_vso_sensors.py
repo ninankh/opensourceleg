@@ -30,10 +30,10 @@ def _hall_mv(adc: ADS114S0x, channel_index: int = 0) -> float:
 
 
 def initialize_sensors() -> dict:
-    need_adc = True
-    need_hall = True
-    need_ankleEncoder = False
-    need_encoderCounter = False
+    need_adc = False
+    need_hall = False
+    need_ankleEncoder = True
+    need_encoderCounter = True
 
     # Guard: Hall requires ADC
     if need_hall and not need_adc:
@@ -56,7 +56,7 @@ def initialize_sensors() -> dict:
             tag="joint_encoder_ankle",
             bus="/dev/i2c-1",
             A1_adr_pin=False,
-            A2_adr_pin=True,
+            A2_adr_pin=False,
             zero_position=0,
             enable_diagnostics=False,
         )
@@ -118,32 +118,33 @@ def read_sensors(data_logger: Logger) -> None:
         if adc is not None:
             data_logger.track_function(lambda: _hall_mv(adc, 0), name="hallEffect_mV")
 
-        readout_interval = FREQUENCY // READ_FREQUENCY
+        FREQUENCY // READ_FREQUENCY
 
         loop = SoftRealtimeLoop(dt=1 / FREQUENCY)
-        t_start = time.monotonic()
+        time.monotonic()
 
-        for loop_count, _ in enumerate(loop):
+        for _loop_count, _ in enumerate(loop):
             vso.update()
+            _ = vso.sensors["ankle_encoder"].position  # Update ankle encoder position
 
             if ankle_sensor is not None:
-                angle_raw = SIDE * np.rad2deg(ankle_sensor.position) - calib_offset
-                angle = angle_raw if loop_count == 0 else ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
+                angle_raw = SIDE * np.rad2deg(vso.sensors["ankle_encoder"].position)  # - calib_offset
+                angle = angle_raw  # if loop_count == 0 else ENCODER_ALPHA * angle_raw + (1 - ENCODER_ALPHA) * angle
+            print(f"Ankle encoder raw angle: {angle_raw:.4f} deg")
+            # data_logger.update()
+            # data_logger.flush_buffer()
 
-            data_logger.update()
-            data_logger.flush_buffer()
-
-            if loop_count % readout_interval == 0:
-                elapsed = time.monotonic() - t_start
-                raw_mv = adc.data[0] if (adc is not None and adc.data) else 0.0
-                hall_mv = _hall_mv(adc, 0) if (adc is not None and adc.data) else 0.0
-                print(
-                    f"\r  t={elapsed:6.1f}s"
-                    + (f"  angle={angle:+7.2f}°" if ankle_sensor is not None else "")
-                    + (f"  raw={raw_mv:+8.2f} mV  hall={hall_mv:+8.2f} mV" if adc is not None else ""),
-                    end="",
-                    flush=True,
-                )
+            # if loop_count % readout_interval == 0:
+            #     elapsed = time.monotonic() - t_start
+            #     raw_mv = adc.data[0] if (adc is not None and adc.data) else 0.0
+            #     hall_mv = _hall_mv(adc, 0) if (adc is not None and adc.data) else 0.0
+            #     print(
+            #         f"\r  t={elapsed:6.1f}s"
+            #         + (f"  angle={angle:+7.2f}°" if ankle_sensor is not None else "")
+            #         + (f"  raw={raw_mv:+8.2f} mV  hall={hall_mv:+8.2f} mV" if adc is not None else ""),
+            #         end="",
+            #         flush=True,
+            #     )
 
 
 if __name__ == "__main__":
